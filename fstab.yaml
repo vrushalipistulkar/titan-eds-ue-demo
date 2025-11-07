@@ -1,0 +1,5 @@
+mountpoints:
+  /:
+    url: "https://author-p121857-e1377564.adobeaemcloud.com/bin/franklin.delivery/BansalJitendra/titan-eds-ue-demo/main"
+    type: "markup"
+    suffix: ".html"
