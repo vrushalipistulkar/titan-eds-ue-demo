@@ -1,5 +1,5 @@
 import { fetchPlaceholders } from '../../scripts/placeholders.js';
-import { moveInstrumentation } from '../../scripts/scripts.js';
+import { moveInstrumentation, isAuthorEnvironment } from '../../scripts/scripts.js';
 
 let hlsLibraryPromise;
 let videoBlockDecoratorPromise;
@@ -346,20 +346,55 @@ export default async function decorate(block) {
   slidesContainer.classList.add('video-slides-container');
 
   rows.forEach((row, index) => {
-    const slide = document.createElement('div');
-    slide.classList.add('video-slide');
-    slide.setAttribute('data-slide-index', index);
+    const existingColumns = row.querySelectorAll(':scope > div');
+    if (existingColumns.length < 2) {
+      for (let i = existingColumns.length; i < 2; i += 1) {
+        row.appendChild(document.createElement('div'));
+      }
+    }
 
     const columns = row.querySelectorAll(':scope > div');
     const videoColumn = columns[0];
     const contentColumn = columns[1];
 
-    if (videoColumn) {
-      const embeddedVideoBlock = videoColumn.querySelector('.video');
+    if (isAuthorEnvironment()) {
+      if (videoColumn && !videoColumn.querySelector('a[href$=".mp4"], a[href*=".m3u8"], .video')) {
+        const placeholderLink = document.createElement('a');
+        placeholderLink.href = 'https://example.com/path-to-video.mp4';
+        placeholderLink.textContent = 'https://example.com/path-to-video.mp4';
+        const placeholderWrapper = document.createElement('p');
+        placeholderWrapper.appendChild(placeholderLink);
+        videoColumn.appendChild(placeholderWrapper);
+      }
+
+      if (contentColumn) {
+        if (!contentColumn.querySelector('h1, h2, h3, h4, h5, h6')) {
+          const heading = document.createElement('h4');
+          heading.textContent = 'Sample Slide Heading';
+          contentColumn.appendChild(heading);
+        }
+        if (!contentColumn.querySelector('p')) {
+          const paragraph = document.createElement('p');
+          paragraph.innerHTML = 'Supporting copy for the video plays here.';
+          contentColumn.appendChild(paragraph);
+        }
+      }
+    }
+
+    const slide = document.createElement('div');
+    slide.classList.add('video-slide');
+    slide.setAttribute('data-slide-index', index);
+
+    const refreshedColumns = row.querySelectorAll(':scope > div');
+    const refreshedVideoColumn = refreshedColumns[0];
+    const refreshedContentColumn = refreshedColumns[1];
+
+    if (refreshedVideoColumn) {
+      const embeddedVideoBlock = refreshedVideoColumn.querySelector('.video');
       if (embeddedVideoBlock) {
         const videoContainer = document.createElement('div');
         videoContainer.classList.add('video-container');
-        moveInstrumentation(videoColumn, videoContainer);
+        moveInstrumentation(refreshedVideoColumn, videoContainer);
 
         videoContainer.appendChild(embeddedVideoBlock);
         const progressBar = createProgressBar();
@@ -368,11 +403,11 @@ export default async function decorate(block) {
 
         videoBlockPromises.push(decorateNestedVideoBlock(embeddedVideoBlock));
       } else {
-        const videoUrl = extractVideoUrl(videoColumn);
+        const videoUrl = extractVideoUrl(refreshedVideoColumn);
         if (videoUrl) {
           const videoContainer = document.createElement('div');
           videoContainer.classList.add('video-container');
-          moveInstrumentation(videoColumn, videoContainer);
+          moveInstrumentation(refreshedVideoColumn, videoContainer);
 
           const video = createVideoElement(videoUrl);
           const progressBar = createProgressBar();
@@ -384,11 +419,11 @@ export default async function decorate(block) {
       }
     }
 
-    if (contentColumn) {
+    if (refreshedContentColumn) {
       const contentContainer = document.createElement('div');
       contentContainer.classList.add('video-content');
 
-      const textElements = Array.from(contentColumn.querySelectorAll('h1, h2, h3, h4, h5, h6, p'));
+      const textElements = Array.from(refreshedContentColumn.querySelectorAll('h1, h2, h3, h4, h5, h6, p'));
       let headingNode;
       let descriptionNode;
 
