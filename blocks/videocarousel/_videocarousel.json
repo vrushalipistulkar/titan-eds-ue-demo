@@ -13,10 +13,7 @@
               "item1": {
                 "sling:resourceType": "core/franklin/components/block/v1/block/item",
                 "name": "Video Carousel Item",
-                "model": "videocarousel-item",
-                "videoUrl": "https://example.com/path-to-video.mp4",
-                "heading": "Sample Slide Heading",
-                "description": "<p>Supporting copy for the video plays here.</p>"
+                "filter": "videocarousel-item"
               }
             }
           }
@@ -32,44 +29,14 @@
             "resourceType": "core/franklin/components/block/v1/block/item",
             "template": {
               "name": "Video Carousel Item",
-              "model": "videocarousel-item"
+              "filter": "videocarousel-item"
             }
           }
         }
       }
     }
   ],
-  "models": [
-    {
-      "id": "videocarousel-item",
-      "fields": [
-        {
-          "component": "text",
-          "name": "videoUrl",
-          "label": "Video URL",
-          "valueType": "string",
-          "required": true,
-          "description": "Provide a direct MP4 URL or an HLS (.m3u8) stream URL."
-        },
-        {
-          "component": "text",
-          "name": "heading",
-          "label": "Heading",
-          "valueType": "string",
-          "required": true,
-          "description": "Primary title shown with the video."
-        },
-        {
-          "component": "richtext",
-          "name": "description",
-          "label": "Description",
-          "value": "<p>Add supporting copy for this slide.</p>",
-          "valueType": "string",
-          "description": "Rich text copy displayed under the heading."
-        }
-      ]
-    }
-  ],
+  "models": [],
   "filters": [
     {
       "id": "videocarousel",
