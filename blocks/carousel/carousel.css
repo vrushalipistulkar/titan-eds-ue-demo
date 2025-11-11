@@ -40,20 +40,13 @@
 }
 
 .carousel-container .carousel-wrapper .carousel > ul.single-slide-carousel {
-  gap: 0;
-  justify-content: center;
+  grid-template-columns: repeat(5, 95%);
 }
 
-.carousel-container .carousel-wrapper .carousel > ul.single-slide-carousel > li {
-  flex: 0 0 95%;
-}
+
 
 .carousel-container .carousel-wrapper .carousel > ul.multislide-carousel {
-  gap: 20px;
-}
-
-.carousel-container .carousel-wrapper .carousel > ul.multislide-carousel > li {
-  flex: 0 0 19%;
+  grid-template-columns: repeat(5, 22%);
 }
 
 /*.carousel-container .carousel-wrapper .carousel.single-slide-carousel > ul {
