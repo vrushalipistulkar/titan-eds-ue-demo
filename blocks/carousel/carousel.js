@@ -8,15 +8,17 @@ function setCarouselItems(number) {
 }
 
 export default function decorate(block) {
-  const variantClass = block.classList.contains('single-slide-carousel')
-    ? 'single-slide-carousel'
-    : block.classList.contains('multislide-carousel')
-      ? 'multislide-carousel'
-      : 'default-carousel';
+  const isSingleSlide = block.classList.contains('single-slide-carousel');
+  const isMultiSlide = block.classList.contains('multislide-carousel');
 
   let i = 0;
   setCarouselItems(2);
   const slider = document.createElement('ul');
+  if (block.classList.contains('single-slide-carousel')) {
+    slider.classList.add('single-slide-carousel');
+  } else if (block.classList.contains('multislide-carousel')) {
+    slider.classList.add('multislide-carousel');
+  }
   const leftContent = document.createElement('div');
   [...block.children].forEach((row) => {
     if (i > 3) {
@@ -97,7 +99,6 @@ export default function decorate(block) {
     moveInstrumentation(img, optimizedPic.querySelector('img'));
     img.closest('picture').replaceWith(optimizedPic);
   });
-  slider.classList.add(variantClass);
   block.textContent = '';
   block.parentNode.parentNode.prepend(leftContent);
   block.append(slider);

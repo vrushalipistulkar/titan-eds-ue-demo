@@ -39,7 +39,24 @@
   border:none;
 }
 
-.carousel-container .carousel-wrapper .carousel.single-slide-carousel > ul {
+.carousel-container .carousel-wrapper .carousel > ul.single-slide-carousel {
+  gap: 0;
+  justify-content: center;
+}
+
+.carousel-container .carousel-wrapper .carousel > ul.single-slide-carousel > li {
+  flex: 0 0 95%;
+}
+
+.carousel-container .carousel-wrapper .carousel > ul.multislide-carousel {
+  gap: 20px;
+}
+
+.carousel-container .carousel-wrapper .carousel > ul.multislide-carousel > li {
+  flex: 0 0 19%;
+}
+
+/*.carousel-container .carousel-wrapper .carousel.single-slide-carousel > ul {
   gap: 0;
 }
 
@@ -53,7 +70,7 @@
 
 .carousel-container .carousel-wrapper .carousel.multislide-carousel > ul > li {
   flex: 0 0 19%;
-}
+}*/
 .carousel-container .carousel-wrapper .carousel .cards-card-body {
   margin: auto;
 }
