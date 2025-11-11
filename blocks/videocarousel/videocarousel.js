@@ -1,6 +1,30 @@
 import { fetchPlaceholders } from '../../scripts/placeholders.js';
+import { moveInstrumentation } from '../../scripts/scripts.js';
 
 let hlsLibraryPromise;
+let videoBlockDecoratorPromise;
+let videoBlockStylesLoaded = false;
+
+function loadVideoBlockStyles() {
+  if (videoBlockStylesLoaded) return;
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = `${window.hlx?.codeBasePath || ''}/blocks/video/video.css`;
+  link.dataset.videoBlockStyles = 'true';
+  document.head.appendChild(link);
+  videoBlockStylesLoaded = true;
+}
+
+async function decorateNestedVideoBlock(videoBlock) {
+  loadVideoBlockStyles();
+  if (!videoBlockDecoratorPromise) {
+    videoBlockDecoratorPromise = import('../video/video.js');
+  }
+  const module = await videoBlockDecoratorPromise;
+  if (module?.default) {
+    module.default(videoBlock);
+  }
+}
 
 function loadHlsLibrary() {
   if (hlsLibraryPromise) return hlsLibraryPromise;
@@ -275,17 +299,19 @@ function extractVideoUrl(videoColumn) {
 
   const embeddedVideoBlock = videoColumn.querySelector('.video');
   if (embeddedVideoBlock) {
+    moveInstrumentation(videoColumn, embeddedVideoBlock);
+
     const blockAnchor = embeddedVideoBlock.querySelector('a[href$=".mp4"], a[href*=".m3u8"]');
     if (blockAnchor) {
       const href = blockAnchor.getAttribute('href') || blockAnchor.textContent?.trim() || '';
-      embeddedVideoBlock.remove();
+      blockAnchor.parentElement?.removeChild(blockAnchor);
       return href;
     }
 
     const videoSource = embeddedVideoBlock.querySelector('video source');
     if (videoSource) {
       const src = videoSource.getAttribute('src') || videoSource.dataset.src || '';
-      embeddedVideoBlock.remove();
+      videoSource.parentElement?.removeChild(videoSource);
       return src;
     }
 
@@ -293,7 +319,7 @@ function extractVideoUrl(videoColumn) {
     if (videoEl) {
       const directSrc = videoEl.getAttribute('src') || videoEl.currentSrc || '';
       if (directSrc) {
-        embeddedVideoBlock.remove();
+        videoEl.parentElement?.remove();
         return directSrc;
       }
     }
@@ -311,6 +337,7 @@ function extractVideoUrl(videoColumn) {
 export default async function decorate(block) {
   const rows = block.querySelectorAll(':scope > div');
   const placeholders = await fetchPlaceholders();
+  const videoBlockPromises = [];
 
   const container = document.createElement('div');
   container.classList.add('video-carousel-container');
@@ -328,17 +355,32 @@ export default async function decorate(block) {
     const contentColumn = columns[1];
 
     if (videoColumn) {
-      const videoUrl = extractVideoUrl(videoColumn);
-      if (videoUrl) {
+      const embeddedVideoBlock = videoColumn.querySelector('.video');
+      if (embeddedVideoBlock) {
         const videoContainer = document.createElement('div');
         videoContainer.classList.add('video-container');
+        moveInstrumentation(videoColumn, videoContainer);
 
-        const video = createVideoElement(videoUrl);
+        videoContainer.appendChild(embeddedVideoBlock);
         const progressBar = createProgressBar();
-
-        videoContainer.appendChild(video);
         videoContainer.appendChild(progressBar);
         slide.appendChild(videoContainer);
+
+        videoBlockPromises.push(decorateNestedVideoBlock(embeddedVideoBlock));
+      } else {
+        const videoUrl = extractVideoUrl(videoColumn);
+        if (videoUrl) {
+          const videoContainer = document.createElement('div');
+          videoContainer.classList.add('video-container');
+          moveInstrumentation(videoColumn, videoContainer);
+
+          const video = createVideoElement(videoUrl);
+          const progressBar = createProgressBar();
+
+          videoContainer.appendChild(video);
+          videoContainer.appendChild(progressBar);
+          slide.appendChild(videoContainer);
+        }
       }
     }
 
@@ -402,6 +444,10 @@ export default async function decorate(block) {
     slidesContainer.appendChild(slide);
     row.remove();
   });
+
+  if (videoBlockPromises.length) {
+    await Promise.all(videoBlockPromises);
+  }
 
   const navButtons = document.createElement('div');
   navButtons.classList.add('video-carousel-nav-buttons');
