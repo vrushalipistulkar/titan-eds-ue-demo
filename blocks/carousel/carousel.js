@@ -8,15 +8,28 @@ function setCarouselItems(number) {
 }
 
 export default function decorate(block) {
+  const variantElement = block.querySelector('p[data-aue-prop="carouselVariant"]');
+  let variantClass = '';
+  if (variantElement) {
+    variantClass = variantElement.textContent.trim();
+    const variantParent = variantElement.parentElement;
+    variantElement.remove();
+    if (variantParent && !variantParent.textContent.trim()) {
+      variantParent.remove();
+    }
+  }
+
   const isSingleSlide = block.classList.contains('single-slide-carousel');
   const isMultiSlide = block.classList.contains('multislide-carousel');
 
   let i = 0;
   setCarouselItems(2);
   const slider = document.createElement('ul');
-  if (block.classList.contains('single-slide-carousel')) {
+  if (variantClass === 'single-slide-carousel' || variantClass === 'multislide-carousel') {
+    slider.classList.add(variantClass);
+  } else if (isSingleSlide) {
     slider.classList.add('single-slide-carousel');
-  } else if (block.classList.contains('multislide-carousel')) {
+  } else if (isMultiSlide) {
     slider.classList.add('multislide-carousel');
   }
   const leftContent = document.createElement('div');
