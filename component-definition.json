@@ -340,6 +340,21 @@
           }
         },
         {
+          "title": "Video Carousel Item",
+          "id": "videocarousel-item",
+          "plugins": {
+            "xwalk": {
+              "page": {
+                "resourceType": "core/franklin/components/block/v1/block/item",
+                "template": {
+                  "name": "Video Carousel Item",
+                  "filter": "videocarousel-item"
+                }
+              }
+            }
+          }
+        },
+        {
           "title": "Find a Doctor",
           "id": "find-a-doctor",
           "plugins": {
