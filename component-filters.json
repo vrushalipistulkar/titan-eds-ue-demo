@@ -23,6 +23,7 @@
       "teaser",
       "text",
       "title",
+      "videocarousel",
       "video",
       "search",
       "separator",
@@ -65,6 +66,12 @@
       "text",      
       "title",
       "video"
+    ]
+  },
+  {
+    "id": "videocarousel",
+    "components": [
+      "videocarousel-item"
     ]
   },
   {
