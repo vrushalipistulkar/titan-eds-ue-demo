@@ -75,6 +75,14 @@
     ]
   },
   {
+    "id": "videocarousel-item",
+    "components": [
+      "video",
+      "title",
+      "text"
+    ]
+  },
+  {
     "id": "form",
     "components": [
       "captcha",
