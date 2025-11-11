@@ -271,6 +271,34 @@ function bindEvents(block) {
 }
 
 function extractVideoUrl(videoColumn) {
+  if (!videoColumn) return '';
+
+  const embeddedVideoBlock = videoColumn.querySelector('.video');
+  if (embeddedVideoBlock) {
+    const blockAnchor = embeddedVideoBlock.querySelector('a[href$=".mp4"], a[href*=".m3u8"]');
+    if (blockAnchor) {
+      const href = blockAnchor.getAttribute('href') || blockAnchor.textContent?.trim() || '';
+      embeddedVideoBlock.remove();
+      return href;
+    }
+
+    const videoSource = embeddedVideoBlock.querySelector('video source');
+    if (videoSource) {
+      const src = videoSource.getAttribute('src') || videoSource.dataset.src || '';
+      embeddedVideoBlock.remove();
+      return src;
+    }
+
+    const videoEl = embeddedVideoBlock.querySelector('video');
+    if (videoEl) {
+      const directSrc = videoEl.getAttribute('src') || videoEl.currentSrc || '';
+      if (directSrc) {
+        embeddedVideoBlock.remove();
+        return directSrc;
+      }
+    }
+  }
+
   const anchor = videoColumn.querySelector('a[href$=".mp4"], a[href*=".m3u8"]');
   if (anchor) return anchor.getAttribute('href');
 
