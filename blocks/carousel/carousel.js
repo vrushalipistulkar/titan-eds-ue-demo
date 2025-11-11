@@ -8,6 +8,12 @@ function setCarouselItems(number) {
 }
 
 export default function decorate(block) {
+  const variantClass = block.classList.contains('single-slide-carousel')
+    ? 'single-slide-carousel'
+    : block.classList.contains('multislide-carousel')
+      ? 'multislide-carousel'
+      : 'default-carousel';
+
   let i = 0;
   setCarouselItems(2);
   const slider = document.createElement('ul');
@@ -91,6 +97,7 @@ export default function decorate(block) {
     moveInstrumentation(img, optimizedPic.querySelector('img'));
     img.closest('picture').replaceWith(optimizedPic);
   });
+  slider.classList.add(variantClass);
   block.textContent = '';
   block.parentNode.parentNode.prepend(leftContent);
   block.append(slider);

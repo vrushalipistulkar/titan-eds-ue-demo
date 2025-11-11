@@ -886,6 +886,27 @@
         "valueType": "string",
         "name": "card",
         "value": ""
+      },
+      {
+        "component": "select",
+        "name": "carouselVariant",
+        "label": "Carousel Variant",
+        "valueType": "string",
+        "value": "",
+        "options": [
+          {
+            "name": "Default",
+            "value": ""
+          },
+          {
+            "name": "Single Slide Carousel",
+            "value": "single-slide-carousel"
+          },
+          {
+            "name": "Multi Slide Carousel",
+            "value": "multislide-carousel"
+          }
+        ]
       }
     ]
   },

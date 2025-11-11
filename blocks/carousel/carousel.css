@@ -38,6 +38,22 @@
   flex: 1 1 0%;
   border:none;
 }
+
+.carousel-container .carousel-wrapper .carousel.single-slide-carousel > ul {
+  gap: 0;
+}
+
+.carousel-container .carousel-wrapper .carousel.single-slide-carousel > ul > li {
+  flex: 0 0 95%;
+}
+
+.carousel-container .carousel-wrapper .carousel.multislide-carousel > ul {
+  gap: 20px;
+}
+
+.carousel-container .carousel-wrapper .carousel.multislide-carousel > ul > li {
+  flex: 0 0 19%;
+}
 .carousel-container .carousel-wrapper .carousel .cards-card-body {
   margin: auto;
 }
@@ -67,6 +83,7 @@
   aspect-ratio: 3 / 1.93;
   object-fit: cover;
   border-radius: 4px;
+  aspect-ratio: inherit;
 }
 
 
