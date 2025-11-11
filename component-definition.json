@@ -332,7 +332,35 @@
                   "item1": {
                     "sling:resourceType": "core/franklin/components/block/v1/block/item",
                     "name": "Video Carousel Item",
-                    "filter": "videocarousel-item"
+                    "filter": "videocarousel-item",
+                    "item1": {
+                      "sling:resourceType": "core/franklin/components/columns/v1/columns",
+                      "name": "Slide Layout",
+                      "columns": "2",
+                      "rows": "1",
+                      "column1": {
+                        "sling:resourceType": "core/franklin/components/columns/v1/column",
+                        "name": "Video Column",
+                        "video": {
+                          "sling:resourceType": "core/franklin/components/block/v1/block",
+                          "name": "Video",
+                          "model": "video",
+                          "videoUrl": "https://example.com/path-to-video.mp4"
+                        }
+                      },
+                      "column2": {
+                        "sling:resourceType": "core/franklin/components/columns/v1/column",
+                        "name": "Content Column",
+                        "title": {
+                          "sling:resourceType": "core/franklin/components/title/v1/title",
+                          "title": "Sample Slide Heading"
+                        },
+                        "text": {
+                          "sling:resourceType": "core/franklin/components/text/v1/text",
+                          "text": "<p>Supporting copy for the video plays here.</p>"
+                        }
+                      }
+                    }
                   }
                 }
               }
@@ -348,7 +376,35 @@
                 "resourceType": "core/franklin/components/block/v1/block/item",
                 "template": {
                   "name": "Video Carousel Item",
-                  "filter": "videocarousel-item"
+                  "filter": "videocarousel-item",
+                  "item1": {
+                    "sling:resourceType": "core/franklin/components/columns/v1/columns",
+                    "name": "Slide Layout",
+                    "columns": "2",
+                    "rows": "1",
+                    "column1": {
+                      "sling:resourceType": "core/franklin/components/columns/v1/column",
+                      "name": "Video Column",
+                      "video": {
+                        "sling:resourceType": "core/franklin/components/block/v1/block",
+                        "name": "Video",
+                        "model": "video",
+                        "videoUrl": "https://example.com/path-to-video.mp4"
+                      }
+                    },
+                    "column2": {
+                      "sling:resourceType": "core/franklin/components/columns/v1/column",
+                      "name": "Content Column",
+                      "title": {
+                        "sling:resourceType": "core/franklin/components/title/v1/title",
+                        "title": "Sample Slide Heading"
+                      },
+                      "text": {
+                        "sling:resourceType": "core/franklin/components/text/v1/text",
+                        "text": "<p>Supporting copy for the video plays here.</p>"
+                      }
+                    }
+                  }
                 }
               }
             }

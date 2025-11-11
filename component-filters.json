@@ -77,6 +77,26 @@
   {
     "id": "videocarousel-item",
     "components": [
+      "columns"
+    ]
+  },
+  {
+    "id": "videocarousel-item_columns",
+    "components": [
+      "column"
+    ]
+  },
+  {
+    "id": "column",
+    "components": [
+      "video",
+      "title",
+      "text"
+    ]
+  },
+  {
+    "id": "videocarousel-item",
+    "components": [
       "video",
       "title",
       "text"
