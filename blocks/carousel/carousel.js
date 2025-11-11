@@ -3,8 +3,8 @@ import { moveInstrumentation } from '../../scripts/scripts.js';
 import createSlider from '../../scripts/slider.js';
 
 
-function setCarouselItems(number) {
-    document.querySelector('.carousel > ul')?.style.setProperty('--items-per-view', number);
+function setCarouselItems(list, number) {
+  list?.style.setProperty('--items-per-view', number);
 }
 
 export default function decorate(block) {
@@ -12,10 +12,16 @@ export default function decorate(block) {
   let variantClass = '';
   if (variantElement) {
     variantClass = variantElement.textContent.trim();
-    const variantParent = variantElement.parentElement;
+    const variantColumn = variantElement.closest('div');
     variantElement.remove();
-    if (variantParent && !variantParent.textContent.trim()) {
-      variantParent.remove();
+    if (variantColumn && !variantColumn.textContent.trim()) {
+      let variantRow = variantColumn;
+      while (variantRow && variantRow.parentElement !== block) {
+        variantRow = variantRow.parentElement;
+      }
+      if (variantRow && variantRow.parentElement === block) {
+        variantRow.remove();
+      }
     }
   }
 
@@ -23,7 +29,6 @@ export default function decorate(block) {
   const isMultiSlide = block.classList.contains('multislide-carousel');
 
   let i = 0;
-  setCarouselItems(2);
   const slider = document.createElement('ul');
   if (variantClass === 'single-slide-carousel' || variantClass === 'multislide-carousel') {
     slider.classList.add(variantClass);
@@ -96,7 +101,7 @@ export default function decorate(block) {
       
       slider.append(li);
     } else {
-      if (row.firstElementChild.firstElementChild) {
+      if (row.firstElementChild?.firstElementChild) {
         leftContent.append(row.firstElementChild.firstElementChild);
       }
       if (row.firstElementChild) {
@@ -112,6 +117,15 @@ export default function decorate(block) {
     moveInstrumentation(img, optimizedPic.querySelector('img'));
     img.closest('picture').replaceWith(optimizedPic);
   });
+
+  if (slider.classList.contains('single-slide-carousel')) {
+    setCarouselItems(slider, 1);
+  } else if (slider.classList.contains('multislide-carousel')) {
+    setCarouselItems(slider, 5);
+  } else {
+    setCarouselItems(slider, 2);
+  }
+
   block.textContent = '';
   block.parentNode.parentNode.prepend(leftContent);
   block.append(slider);
