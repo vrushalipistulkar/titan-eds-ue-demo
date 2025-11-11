@@ -336,7 +336,8 @@
                     "item1": {
                       "sling:resourceType": "core/franklin/components/columns/v1/columns",
                       "name": "Slide Layout",
-                      "columns": "2",
+                  "filter": "videocarousel-item_columns",
+                  "columns": "2",
                       "rows": "1",
                       "column1": {
                         "sling:resourceType": "core/franklin/components/columns/v1/column",
@@ -380,6 +381,7 @@
                   "item1": {
                     "sling:resourceType": "core/franklin/components/columns/v1/columns",
                     "name": "Slide Layout",
+                    "filter": "videocarousel-item_columns",
                     "columns": "2",
                     "rows": "1",
                     "column1": {

@@ -16,7 +16,8 @@
                 "filter": "videocarousel-item",
                 "item1": {
                   "sling:resourceType": "core/franklin/components/columns/v1/columns",
-                  "name": "Slide Layout",
+                "name": "Slide Layout",
+                "filter": "videocarousel-item_columns",
                   "columns": "2",
                   "rows": "1",
                   "column1": {
@@ -70,6 +71,26 @@
       "id": "videocarousel",
       "components": [
         "videocarousel-item"
+      ]
+    },
+    {
+      "id": "videocarousel-item",
+      "components": [
+        "columns"
+      ]
+    },
+    {
+      "id": "videocarousel-item_columns",
+      "components": [
+        "column"
+      ]
+    },
+    {
+      "id": "column",
+      "components": [
+        "video",
+        "title",
+        "text"
       ]
     }
   ]

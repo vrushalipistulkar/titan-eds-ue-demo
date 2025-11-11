@@ -87,22 +87,6 @@
     ]
   },
   {
-    "id": "column",
-    "components": [
-      "video",
-      "title",
-      "text"
-    ]
-  },
-  {
-    "id": "videocarousel-item",
-    "components": [
-      "video",
-      "title",
-      "text"
-    ]
-  },
-  {
     "id": "form",
     "components": [
       "captcha",

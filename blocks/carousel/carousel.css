@@ -422,8 +422,10 @@
 }
 
 /*buttons*/
-
-
+/*teaser-card image*-- Variant-full image 3 in a row*/
+.carousel-container .carousel-wrapper .carousel > ul > li.teaser-card img {
+  aspect-ratio: inherit;
+}
 
 
 /* Responsive Styles */
