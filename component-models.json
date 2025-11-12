@@ -927,12 +927,19 @@
     "id": "videocarousel",
     "fields": [
       {
-        "component": "reference",
-        "valueType": "string",
-        "name": "videocarousel-item",
-        "label": "Video Carousel Item",
-        "multi": true,
-        "value": ""
+        "component": "container",
+        "name": "items",
+        "label": "Slides",
+        "collapsible": false,
+        "fields": [
+          {
+            "component": "reference",
+            "valueType": "string",
+            "name": "videocarousel-item",
+            "label": "Video Carousel Item",
+            "multi": true
+          }
+        ]
       }
     ]
   },
@@ -940,34 +947,16 @@
     "id": "videocarousel-item",
     "fields": [
       {
-        "component": "container",
-        "name": "slideContent",
-        "label": "Slide Content",
-        "collapsible": false,
-        "fields": [
-          {
-            "component": "text",
-            "name": "videoUrl",
-            "label": "Video URL",
-            "valueType": "string",
-            "description": "Provide an MP4 URL or HLS (.m3u8) stream for this slide."
-          },
-          {
-            "component": "text",
-            "name": "heading",
-            "label": "Heading",
-            "valueType": "string",
-            "description": "Primary title shown with the video."
-          },
-          {
-            "component": "richtext",
-            "name": "description",
-            "label": "Description",
-            "value": "<p>Supporting copy for the video plays here.</p>",
-            "valueType": "string",
-            "description": "Rich text copy displayed under the heading."
-          }
-        ]
+        "component": "text",
+        "name": "heading",
+        "label": "Heading",
+        "valueType": "string"
+      },
+      {
+        "component": "richtext",
+        "name": "description",
+        "label": "Description",
+        "value": "<p>Supporting copy for the video plays here.</p>"
       }
     ]
   },

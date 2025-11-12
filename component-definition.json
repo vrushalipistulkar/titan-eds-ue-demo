@@ -332,7 +332,18 @@
                   "item1": {
                     "sling:resourceType": "core/franklin/components/block/v1/block/item",
                     "name": "Video Carousel Item",
-                    "filter": "videocarousel-item"
+                    "filter": "videocarousel-item",
+                    "columns": {
+                      "sling:resourceType": "core/franklin/components/columns/v1/columns",
+                      "columns": "2",
+                      "rows": "1",
+                      "column1": {
+                        "sling:resourceType": "core/franklin/components/columns/v1/column"
+                      },
+                      "column2": {
+                        "sling:resourceType": "core/franklin/components/columns/v1/column"
+                      }
+                    }
                   }
                 }
               }

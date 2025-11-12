@@ -63,13 +63,35 @@
     "components": [
       "video",
       "title",
-      "text"
+      "text",
+      "image"
     ]
   },
   {
     "id": "videocarousel",
     "components": [
       "videocarousel-item"
+    ]
+  },
+  {
+    "id": "videocarousel-item",
+    "components": [
+      "columns"
+    ]
+  },
+  {
+    "id": "columns",
+    "components": [
+      "column"
+    ]
+  },
+  {
+    "id": "column",
+    "components": [
+      "video",
+      "title",
+      "text",
+      "image"
     ]
   },
   {
