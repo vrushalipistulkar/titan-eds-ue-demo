@@ -11,9 +11,14 @@ const VARIANT_CLASSES = ['single-slide-carousel', 'multislide-carousel'];
 
 function extractVariantFromRow(row) {
   if (!row) return '';
-  const firstColumn = row.querySelector(':scope > div');
-  if (!firstColumn) return '';
-  const text = (firstColumn.textContent || '').trim();
+  const directParagraph = row.querySelector(':scope > p');
+  if (directParagraph) {
+    const paragraphText = directParagraph.textContent.trim();
+    if (VARIANT_CLASSES.includes(paragraphText)) {
+      return paragraphText;
+    }
+  }
+  const text = (row.textContent || '').trim();
   if (VARIANT_CLASSES.includes(text)) {
     return text;
   }
