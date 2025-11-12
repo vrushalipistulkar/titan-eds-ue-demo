@@ -61,11 +61,9 @@
   {
     "id": "column",
     "components": [
-      "button",
-      "image",
-      "text",      
+      "video",
       "title",
-      "video"
+      "text"
     ]
   },
   {
@@ -78,12 +76,6 @@
     "id": "videocarousel-item",
     "components": [
       "columns"
-    ]
-  },
-  {
-    "id": "videocarousel-item_columns",
-    "components": [
-      "column"
     ]
   },
   {
