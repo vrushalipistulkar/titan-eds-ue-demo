@@ -12,15 +12,13 @@ export default function decorate(block) {
   let variantClass = '';
   if (variantElement) {
     variantClass = variantElement.textContent.trim();
-    const variantColumn = variantElement.closest('div');
-    variantElement.remove();
-    if (variantColumn && !variantColumn.textContent.trim()) {
-      let variantRow = variantColumn;
-      while (variantRow && variantRow.parentElement !== block) {
-        variantRow = variantRow.parentElement;
-      }
-      if (variantRow && variantRow.parentElement === block) {
-        variantRow.remove();
+    const variantRow = variantElement.closest(':scope > div');
+    if (variantRow && variantRow.parentElement === block) {
+      variantRow.remove();
+    } else {
+      const fallbackRow = variantElement.closest('div');
+      if (fallbackRow && fallbackRow.parentElement === block) {
+        fallbackRow.remove();
       }
     }
   }
