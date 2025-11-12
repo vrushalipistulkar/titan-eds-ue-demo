@@ -9,18 +9,29 @@ function setCarouselItems(list, number) {
 
 const VARIANT_CLASSES = ['single-slide-carousel', 'multislide-carousel'];
 
-function extractVariantFromRow(row) {
-  if (!row) return '';
-  const directParagraph = row.querySelector(':scope > p');
-  if (directParagraph) {
-    const paragraphText = directParagraph.textContent.trim();
-    if (VARIANT_CLASSES.includes(paragraphText)) {
-      return paragraphText;
+function detectVariantText(root) {
+  if (!root) return '';
+  const paragraphs = root.querySelectorAll('p');
+  for (const p of paragraphs) {
+    const text = p.textContent.trim();
+    if (VARIANT_CLASSES.includes(text)) {
+      return text;
     }
   }
-  const text = (row.textContent || '').trim();
+  const text = root.textContent.trim();
   if (VARIANT_CLASSES.includes(text)) {
     return text;
+  }
+  return '';
+}
+
+function removeVariantRow(block) {
+  const firstRow = block.firstElementChild;
+  if (!firstRow) return '';
+  const firstRowVariant = detectVariantText(firstRow);
+  if (firstRowVariant) {
+    block.removeChild(firstRow);
+    return firstRowVariant;
   }
   return '';
 }
@@ -28,24 +39,36 @@ function extractVariantFromRow(row) {
 export default function decorate(block) {
   let variantClass = '';
 
-  const variantElement = block.querySelector('p[data-aue-prop="carouselVariant"]');
-  if (variantElement) {
-    variantClass = variantElement.textContent.trim();
-    let variantRow = variantElement.closest(':scope > div');
-    if (!variantRow || variantRow.parentElement !== block) {
-      variantRow = variantElement.closest('div');
-    }
-    if (variantRow && variantRow.parentElement === block) {
-      variantRow.remove();
+  // Check the sibling wrapper first (author markup)
+  const siblingWrapper = block.previousElementSibling;
+  if (siblingWrapper && siblingWrapper.classList.contains('default-content-wrapper')) {
+    const variantParagraph = [...siblingWrapper.querySelectorAll('p')]
+      .find((p) => VARIANT_CLASSES.includes(p.textContent.trim()));
+    if (variantParagraph) {
+      variantClass = variantParagraph.textContent.trim();
+      siblingWrapper.removeChild(variantParagraph);
+      if (!siblingWrapper.textContent.trim()) {
+        siblingWrapper.remove();
+      }
     }
   }
 
+  // Fallback inside block rows (publish markup)
   if (!variantClass) {
-    const firstRow = block.firstElementChild;
-    const detectedVariant = extractVariantFromRow(firstRow);
-    if (detectedVariant) {
-      variantClass = detectedVariant;
-      block.removeChild(firstRow);
+    variantClass = removeVariantRow(block);
+  }
+
+  // If still not found, inspect placeholder inside block
+  if (!variantClass) {
+    const variantElement = block.querySelector('p[data-aue-prop="carouselVariant"]');
+    if (variantElement) {
+      variantClass = variantElement.textContent.trim();
+      const variantRow = variantElement.closest(':scope > div') || variantElement.closest('div');
+      if (variantRow && variantRow.parentElement === block) {
+        variantRow.remove();
+      } else {
+        variantElement.remove();
+      }
     }
   }
 
@@ -64,12 +87,13 @@ export default function decorate(block) {
   const leftContent = document.createElement('div');
   const rows = [...block.children];
   rows.forEach((row) => {
-    const rowVariant = extractVariantFromRow(row);
+    const rowVariant = detectVariantText(row);
     if (rowVariant) {
-      row.remove();
       if (!variantClass) {
         variantClass = rowVariant;
+        slider.classList.add(rowVariant);
       }
+      row.remove();
       return;
     }
 
@@ -127,9 +151,7 @@ export default function decorate(block) {
       // Apply CTA styles to button containers
       const buttonContainers = li.querySelectorAll('p.button-container');
       buttonContainers.forEach((buttonContainer) => {
-        // Remove any existing CTA classes
         buttonContainer.classList.remove('default', 'cta-button', 'cta-button-secondary', 'cta-button-dark', 'cta-default');
-        // Add the correct CTA class
         buttonContainer.classList.add(ctaStyle);
       });
       
