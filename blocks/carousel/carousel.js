@@ -123,6 +123,10 @@ export default function decorate(block) {
         buttonContainer.classList.add(ctaStyle);
       });
 
+      li.querySelectorAll('.cards-config').forEach((configCol) => {
+        configCol.remove();
+      });
+
       slider.append(li);
       row.remove();
     } else {
