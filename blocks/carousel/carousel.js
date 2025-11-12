@@ -97,30 +97,25 @@ export default function decorate(block) {
       return;
     }
 
-    const columns = row.querySelectorAll(':scope > div');
-    const isCardRow = columns.length >= 4;
+    const isSlideRow = row.children.length >= 3;
 
-    if (isCardRow) {
+    if (isSlideRow) {
+      const columns = Array.from(row.children);
       const li = document.createElement('li');
 
-      const styleDiv = columns[2];
-      const styleParagraph = styleDiv?.querySelector('p');
+      const configColumns = columns.slice(2);
+      const styleParagraph = configColumns[0]?.querySelector('p');
       const cardStyle = styleParagraph?.textContent?.trim() || 'default';
       if (cardStyle && cardStyle !== 'default') {
-        li.className = cardStyle;
+        li.classList.add(cardStyle);
       }
 
-      const ctaDiv = columns[3];
-      const ctaParagraph = ctaDiv?.querySelector('p');
+      const ctaParagraph = configColumns[1]?.querySelector('p');
       const ctaStyle = ctaParagraph?.textContent?.trim() || 'default';
 
       moveInstrumentation(row, li);
-      while (row.firstElementChild) {
-        li.append(row.firstElementChild);
-      }
-
-      li.querySelectorAll('.cards-config').forEach((configCol) => {
-        configCol.remove();
+      columns.slice(0, 2).forEach((column) => {
+        li.append(column);
       });
 
       const buttonContainers = li.querySelectorAll('p.button-container');
