@@ -98,10 +98,9 @@ export default function decorate(block) {
     }
 
     const columns = row.querySelectorAll(':scope > div');
-    const hasMedia = columns[0]?.querySelector('picture, img, video');
-    const isSlideRow = columns.length >= 4 && hasMedia;
+    const isCardRow = columns.length >= 4;
 
-    if (isSlideRow) {
+    if (isCardRow) {
       const li = document.createElement('li');
 
       const styleDiv = columns[2];
