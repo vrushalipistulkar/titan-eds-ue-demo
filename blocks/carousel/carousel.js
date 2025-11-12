@@ -62,7 +62,17 @@ export default function decorate(block) {
     slider.classList.add('multislide-carousel');
   }
   const leftContent = document.createElement('div');
-  [...block.children].forEach((row) => {
+  const rows = [...block.children];
+  rows.forEach((row) => {
+    const rowVariant = extractVariantFromRow(row);
+    if (rowVariant) {
+      row.remove();
+      if (!variantClass) {
+        variantClass = rowVariant;
+      }
+      return;
+    }
+
     if (i > 3) {
       const li = document.createElement('li');
       
