@@ -7,19 +7,40 @@ function setCarouselItems(list, number) {
   list?.style.setProperty('--items-per-view', number);
 }
 
+const VARIANT_CLASSES = ['single-slide-carousel', 'multislide-carousel'];
+
+function extractVariantFromRow(row) {
+  if (!row) return '';
+  const firstColumn = row.querySelector(':scope > div');
+  if (!firstColumn) return '';
+  const text = (firstColumn.textContent || '').trim();
+  if (VARIANT_CLASSES.includes(text)) {
+    return text;
+  }
+  return '';
+}
+
 export default function decorate(block) {
-  const variantElement = block.querySelector('p[data-aue-prop="carouselVariant"]');
   let variantClass = '';
+
+  const variantElement = block.querySelector('p[data-aue-prop="carouselVariant"]');
   if (variantElement) {
     variantClass = variantElement.textContent.trim();
-    const variantRow = variantElement.closest(':scope > div');
+    let variantRow = variantElement.closest(':scope > div');
+    if (!variantRow || variantRow.parentElement !== block) {
+      variantRow = variantElement.closest('div');
+    }
     if (variantRow && variantRow.parentElement === block) {
       variantRow.remove();
-    } else {
-      const fallbackRow = variantElement.closest('div');
-      if (fallbackRow && fallbackRow.parentElement === block) {
-        fallbackRow.remove();
-      }
+    }
+  }
+
+  if (!variantClass) {
+    const firstRow = block.firstElementChild;
+    const detectedVariant = extractVariantFromRow(firstRow);
+    if (detectedVariant) {
+      variantClass = detectedVariant;
+      block.removeChild(firstRow);
     }
   }
 
@@ -28,7 +49,7 @@ export default function decorate(block) {
 
   let i = 0;
   const slider = document.createElement('ul');
-  if (variantClass === 'single-slide-carousel' || variantClass === 'multislide-carousel') {
+  if (VARIANT_CLASSES.includes(variantClass)) {
     slider.classList.add(variantClass);
   } else if (isSingleSlide) {
     slider.classList.add('single-slide-carousel');
@@ -90,7 +111,7 @@ export default function decorate(block) {
       
       // Apply CTA styles to button containers
       const buttonContainers = li.querySelectorAll('p.button-container');
-      buttonContainers.forEach(buttonContainer => {
+      buttonContainers.forEach((buttonContainer) => {
         // Remove any existing CTA classes
         buttonContainer.classList.remove('default', 'cta-button', 'cta-button-secondary', 'cta-button-dark', 'cta-default');
         // Add the correct CTA class
