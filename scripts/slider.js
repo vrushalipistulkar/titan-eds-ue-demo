@@ -36,11 +36,14 @@ export default async function createSlider(block) {
   // Call function after page load
   const moveRightBtns = document.querySelectorAll(`.${nextBtn}`);
   const moveLeftBtns = document.querySelectorAll(`.${prevBtn}`);
-  const itemList = [...document.querySelectorAll('.carousel > ul > li')];
+  const itemList = [...document.querySelectorAll('.carousel > ul > li')]
+    .filter((item) => !item.closest('.carousel')?.classList.contains('single-slide-carousel-wrapper'));
   const observerOptions = {
     rootMargin: '0px',
     threshold: 0.25,
   };
+
+  const isSingleSlideCarousel = (btn) => btn.closest('.carousel')?.classList.contains('single-slide-carousel-wrapper');
 
   function moveDirection(carousel, itemWidth, option) {
     const carouselItems = carousel.querySelector('ul');
@@ -64,7 +67,8 @@ export default async function createSlider(block) {
 
   // Button Event Handler
   moveLeftBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', (event) => {
+      if (isSingleSlideCarousel(btn)) return;
       const carousel = btn.closest('.carousel-container').querySelector('.carousel');
       const carouselItems = carousel.querySelector('ul');
       const totalItems = carouselItems.children.length || 1;
@@ -74,7 +78,8 @@ export default async function createSlider(block) {
   });
 
   moveRightBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
+    btn.addEventListener('click', (event) => {
+      if (isSingleSlideCarousel(btn)) return;
       const carousel = btn.closest('.carousel-container').querySelector('.carousel');
       const carouselItems = carousel.querySelector('ul');
       const totalItems = carouselItems.children.length || 1;

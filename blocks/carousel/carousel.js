@@ -9,6 +9,46 @@ function setCarouselItems(list, number) {
 
 const VARIANT_CLASSES = ['single-slide-carousel', 'multislide-carousel'];
 
+function setupSingleSlideNavigation(block, slider) {
+  const slides = Array.from(slider.children);
+  if (!slides.length) return;
+
+  let activeIndex = slides.findIndex((slide) => slide.classList.contains('active'));
+  if (activeIndex < 0) activeIndex = 0;
+
+  const applyState = () => {
+    slides.forEach((slide, idx) => {
+      if (idx === activeIndex) {
+        slide.classList.add('active');
+        slide.classList.remove('opacity');
+      } else {
+        slide.classList.remove('active');
+        slide.classList.add('opacity');
+      }
+    });
+  };
+
+  applyState();
+
+  const nextBtn = block.querySelector('.button.next');
+  const prevBtn = block.querySelector('.button.prev');
+
+  const move = (delta) => {
+    activeIndex = (activeIndex + delta + slides.length) % slides.length;
+    applyState();
+  };
+
+  const handleClick = (delta) => (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+    move(delta);
+  };
+
+  nextBtn?.addEventListener('click', handleClick(1), true);
+  prevBtn?.addEventListener('click', handleClick(-1), true);
+}
+
 function detectVariantText(root) {
   if (!root) return '';
   const paragraphs = root.querySelectorAll('p');
@@ -86,7 +126,7 @@ export default function decorate(block) {
   }
   const leftContent = document.createElement('div');
   const rows = [...block.children];
-  rows.forEach((row) => {
+  rows.forEach((row, index) => {
     const rowVariant = detectVariantText(row);
     if (rowVariant) {
       if (!variantClass) {
@@ -97,10 +137,11 @@ export default function decorate(block) {
       return;
     }
 
-    const isSlideRow = row.children.length >= 3;
+    const columns = Array.from(row.children);
+    const firstColumnHasMedia = columns[0]?.querySelector('picture, img, video');
+    const isSlideRow = columns.length >= 4 && firstColumnHasMedia;
 
     if (isSlideRow) {
-      const columns = Array.from(row.children);
       const li = document.createElement('li');
 
       const configColumns = columns.slice(2);
@@ -124,6 +165,10 @@ export default function decorate(block) {
         buttonContainer.classList.add(ctaStyle);
       });
 
+      if (index === 0) {
+        li.classList.add('active');
+      }
+
       slider.append(li);
       row.remove();
     } else {
@@ -142,6 +187,9 @@ export default function decorate(block) {
 
   if (slider.classList.contains('single-slide-carousel')) {
     setCarouselItems(slider, 1);
+    if (slider.classList.contains('single-slide-carousel')) {
+      block.classList.add('single-slide-carousel-wrapper');
+    }
   } else if (slider.classList.contains('multislide-carousel')) {
     setCarouselItems(slider, 5);
   } else {
@@ -152,4 +200,9 @@ export default function decorate(block) {
   block.parentNode.parentNode.prepend(leftContent);
   block.append(slider);
   createSlider(block);
+
+  if (slider.classList.contains('single-slide-carousel')) {
+    block.classList.add('single-slide-carousel-wrapper');
+    setupSingleSlideNavigation(block, slider);
+  }
 }
