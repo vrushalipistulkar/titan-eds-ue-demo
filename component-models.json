@@ -927,19 +927,11 @@
     "id": "videocarousel",
     "fields": [
       {
-        "component": "container",
-        "name": "items",
-        "label": "Slides",
-        "collapsible": false,
-        "fields": [
-          {
-            "component": "reference",
-            "valueType": "string",
-            "name": "videocarousel-item",
-            "label": "Video Carousel Item",
-            "multi": true
-          }
-        ]
+        "component": "reference",
+        "valueType": "string",
+        "name": "videocarousel-item",
+        "label": "Video Carousel Item",
+        "multi": true
       }
     ]
   },
@@ -947,15 +939,15 @@
     "id": "videocarousel-item",
     "fields": [
       {
-        "component": "text",
-        "name": "heading",
-        "label": "Heading",
-        "valueType": "string"
+        "component": "reference",
+        "valueType": "string",
+        "name": "video",
+        "label": "Video Block"
       },
       {
         "component": "richtext",
-        "name": "description",
-        "label": "Description",
+        "name": "text",
+        "label": "Text",
         "value": "<p>Supporting copy for the video plays here.</p>"
       }
     ]
