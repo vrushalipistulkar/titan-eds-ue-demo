@@ -115,16 +115,18 @@ export default function decorate(block) {
       const ctaStyle = ctaParagraph?.textContent?.trim() || 'default';
 
       moveInstrumentation(row, li);
-      while (row.firstElementChild) li.append(row.firstElementChild);
+      while (row.firstElementChild) {
+        li.append(row.firstElementChild);
+      }
+
+      li.querySelectorAll('.cards-config').forEach((configCol) => {
+        configCol.remove();
+      });
 
       const buttonContainers = li.querySelectorAll('p.button-container');
       buttonContainers.forEach((buttonContainer) => {
         buttonContainer.classList.remove('default', 'cta-button', 'cta-button-secondary', 'cta-button-dark', 'cta-default');
         buttonContainer.classList.add(ctaStyle);
-      });
-
-      li.querySelectorAll('.cards-config').forEach((configCol) => {
-        configCol.remove();
       });
 
       slider.append(li);
