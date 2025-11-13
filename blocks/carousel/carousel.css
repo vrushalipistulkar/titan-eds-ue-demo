@@ -10,12 +10,16 @@
 .carousel-container .carousel-wrapper {
   padding: 0;
   margin: 0;
-  width: auto;
-  max-width: initial;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
 }
 .carousel-container .carousel-wrapper .carousel {
   padding: 5%;
   position: relative;
+  overflow: hidden;
+  width: 100%;
+  box-sizing: border-box;
 }
 .carousel-container .carousel-wrapper .carousel > ul {
   display: flex;
@@ -23,12 +27,13 @@
   margin: 0;
   padding: 0;
   min-width: initial;
-  width: auto;
+  width: 100%;
   flex-direction: row;
   flex: 1;
   gap: 30px;
   padding: 10px 0px;
   align-items: stretch;
+  overflow: hidden;
 }
 
 .carousel-container .carousel-wrapper .carousel > ul.single-slide-carousel {
@@ -48,7 +53,8 @@
   min-width: initial;
   max-width: initial;
   padding: 0px;
-  flex: 1 1 0%;
+  flex: 0 0 calc((100% - (30px * (var(--items-per-view) - 1))) / var(--items-per-view));
+  min-width: 0;
   border:none;
 }
 

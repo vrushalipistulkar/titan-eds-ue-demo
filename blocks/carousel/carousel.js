@@ -193,7 +193,7 @@ export default function decorate(block) {
   } else if (slider.classList.contains('multislide-carousel')) {
     setCarouselItems(slider, 5);
   } else {
-    setCarouselItems(slider, 2);
+    setCarouselItems(slider, 3);
   }
 
   block.textContent = '';
