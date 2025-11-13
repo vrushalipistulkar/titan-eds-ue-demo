@@ -74,33 +74,6 @@
     ]
   },
   {
-    "id": "videocarousel-item",
-    "components": [
-      "columns"
-    ]
-  },
-  {
-    "id": "columns",
-    "components": [
-      "column"
-    ]
-  },
-  {
-    "id": "column",
-    "components": [
-      "video",
-      "title",
-      "text",
-      "image"
-    ]
-  },
-  {
-    "id": "videocarousel-item",
-    "components": [
-      "columns"
-    ]
-  },
-  {
     "id": "form",
     "components": [
       "captcha",

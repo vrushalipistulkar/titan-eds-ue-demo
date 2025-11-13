@@ -297,6 +297,14 @@ function bindEvents(block) {
 function extractVideoUrl(videoColumn) {
   if (!videoColumn) return '';
 
+  // Check for data-aue-prop="videoUrl" (model field)
+  const videoUrlElement = videoColumn.querySelector('[data-aue-prop="videoUrl"]');
+  if (videoUrlElement) {
+    const url = videoUrlElement.textContent?.trim() || videoUrlElement.getAttribute('href') || '';
+    if (url) return url;
+  }
+
+  // Check for embedded video block
   const embeddedVideoBlock = videoColumn.querySelector('.video');
   if (embeddedVideoBlock) {
     moveInstrumentation(videoColumn, embeddedVideoBlock);
@@ -325,17 +333,21 @@ function extractVideoUrl(videoColumn) {
     }
   }
 
-  const anchor = videoColumn.querySelector('a[href$=".mp4"], a[href*=".m3u8"]');
+  // Check for anchor links
+  const anchor = videoColumn.querySelector('a[href$=".mp4"], a[href*=".m3u8"], a[href$=".mov"], a[href$=".webm"]');
   if (anchor) return anchor.getAttribute('href');
 
+  // Check for plain text URL
   const textLink = videoColumn.textContent?.trim();
-  if (textLink?.startsWith('http')) return textLink;
+  if (textLink && (textLink.startsWith('http') || textLink.endsWith('.mp4') || textLink.endsWith('.m3u8') || textLink.endsWith('.mov') || textLink.endsWith('.webm'))) {
+    return textLink;
+  }
 
   return '';
 }
 
 export default async function decorate(block) {
-  const rows = block.querySelectorAll(':scope > div');
+  const rows = Array.from(block.children);
   const placeholders = await fetchPlaceholders();
   const videoBlockPromises = [];
 
@@ -346,55 +358,36 @@ export default async function decorate(block) {
   slidesContainer.classList.add('video-slides-container');
 
   rows.forEach((row, index) => {
-    const existingColumns = row.querySelectorAll(':scope > div');
-    if (existingColumns.length < 2) {
-      for (let i = existingColumns.length; i < 2; i += 1) {
+    // Skip if row is empty or doesn't have columns
+    if (!row.children.length) {
+      row.remove();
+      return;
+    }
+
+    const columns = Array.from(row.children);
+    if (columns.length < 2) {
+      // Ensure we have at least 2 columns
+      for (let i = columns.length; i < 2; i += 1) {
         row.appendChild(document.createElement('div'));
       }
     }
 
-    const columns = row.querySelectorAll(':scope > div');
-    const videoColumn = columns[0];
-    const contentColumn = columns[1];
-
-    if (isAuthorEnvironment()) {
-      if (videoColumn && !videoColumn.querySelector('a[href$=".mp4"], a[href*=".m3u8"], .video')) {
-        const placeholderLink = document.createElement('a');
-        placeholderLink.href = 'https://example.com/path-to-video.mp4';
-        placeholderLink.textContent = 'https://example.com/path-to-video.mp4';
-        const placeholderWrapper = document.createElement('p');
-        placeholderWrapper.appendChild(placeholderLink);
-        videoColumn.appendChild(placeholderWrapper);
-      }
-
-      if (contentColumn) {
-        if (!contentColumn.querySelector('h1, h2, h3, h4, h5, h6')) {
-          const heading = document.createElement('h4');
-          heading.textContent = 'Sample Slide Heading';
-          contentColumn.appendChild(heading);
-        }
-        if (!contentColumn.querySelector('p')) {
-          const paragraph = document.createElement('p');
-          paragraph.innerHTML = 'Supporting copy for the video plays here.';
-          contentColumn.appendChild(paragraph);
-        }
-      }
-    }
+    const refreshedColumns = Array.from(row.children);
+    const videoColumn = refreshedColumns[0];
+    const contentColumn = refreshedColumns[1];
 
     const slide = document.createElement('div');
     slide.classList.add('video-slide');
     slide.setAttribute('data-slide-index', index);
+    moveInstrumentation(row, slide);
 
-    const refreshedColumns = row.querySelectorAll(':scope > div');
-    const refreshedVideoColumn = refreshedColumns[0];
-    const refreshedContentColumn = refreshedColumns[1];
-
-    if (refreshedVideoColumn) {
-      const embeddedVideoBlock = refreshedVideoColumn.querySelector('.video');
+    // Extract and create video from first column
+    if (videoColumn) {
+      const embeddedVideoBlock = videoColumn.querySelector('.video');
       if (embeddedVideoBlock) {
         const videoContainer = document.createElement('div');
         videoContainer.classList.add('video-container');
-        moveInstrumentation(refreshedVideoColumn, videoContainer);
+        moveInstrumentation(videoColumn, videoContainer);
 
         videoContainer.appendChild(embeddedVideoBlock);
         const progressBar = createProgressBar();
@@ -403,11 +396,11 @@ export default async function decorate(block) {
 
         videoBlockPromises.push(decorateNestedVideoBlock(embeddedVideoBlock));
       } else {
-        const videoUrl = extractVideoUrl(refreshedVideoColumn);
+        const videoUrl = extractVideoUrl(videoColumn);
         if (videoUrl) {
           const videoContainer = document.createElement('div');
           videoContainer.classList.add('video-container');
-          moveInstrumentation(refreshedVideoColumn, videoContainer);
+          moveInstrumentation(videoColumn, videoContainer);
 
           const video = createVideoElement(videoUrl);
           const progressBar = createProgressBar();
@@ -419,58 +412,43 @@ export default async function decorate(block) {
       }
     }
 
-    if (refreshedContentColumn) {
+    // Extract and create content from second column
+    if (contentColumn) {
       const contentContainer = document.createElement('div');
       contentContainer.classList.add('video-content');
+      moveInstrumentation(contentColumn, contentContainer);
 
-      const textElements = Array.from(refreshedContentColumn.querySelectorAll('h1, h2, h3, h4, h5, h6, p'));
-      let headingNode;
-      let descriptionNode;
-
-      if (textElements.length) {
-        const firstElement = textElements.shift();
-        if (firstElement.tagName.toLowerCase().startsWith('h')) {
-          headingNode = firstElement.cloneNode(true);
-        } else if (firstElement.textContent.trim()) {
-          headingNode = document.createElement('h4');
-          headingNode.textContent = firstElement.textContent.trim();
-        }
-
+      // Check for data-aue-prop="text" (model field)
+      const textElement = contentColumn.querySelector('[data-aue-prop="text"]');
+      if (textElement) {
+        const paragraph = document.createElement('div');
+        paragraph.innerHTML = textElement.innerHTML || textElement.textContent;
+        contentContainer.appendChild(paragraph);
+      } else {
+        // Fallback: extract all text content
+        const textElements = Array.from(contentColumn.querySelectorAll('h1, h2, h3, h4, h5, h6, p, div'));
         if (textElements.length) {
-          const firstDescriptionEl = textElements.shift();
-          const paragraph = document.createElement('p');
-          paragraph.innerHTML = firstDescriptionEl.innerHTML;
-
           textElements.forEach((el) => {
-            if (el.innerHTML.trim()) {
-              paragraph.innerHTML += `<br><br>${el.innerHTML}`;
+            if (el.textContent.trim()) {
+              const cloned = el.cloneNode(true);
+              contentContainer.appendChild(cloned);
             }
           });
-
-          descriptionNode = paragraph;
+        } else if (contentColumn.textContent.trim()) {
+          const paragraph = document.createElement('p');
+          paragraph.innerHTML = contentColumn.innerHTML || contentColumn.textContent;
+          contentContainer.appendChild(paragraph);
         }
       }
 
-      if (!headingNode && contentColumn.textContent.trim()) {
-        headingNode = document.createElement('h4');
-        headingNode.textContent = contentColumn.textContent.trim();
-      }
-
-      if (!descriptionNode) {
-        const fallbackParagraph = contentColumn.querySelector('p');
-        if (fallbackParagraph) {
-          descriptionNode = fallbackParagraph.cloneNode(true);
+      // Add show more/less to description paragraphs
+      const descriptionParagraphs = contentContainer.querySelectorAll('p');
+      if (descriptionParagraphs.length > 0) {
+        const lastParagraph = descriptionParagraphs[descriptionParagraphs.length - 1];
+        if (lastParagraph.textContent.trim().length > 150) {
+          const showMoreLess = createShowMoreLess(lastParagraph);
+          contentContainer.appendChild(showMoreLess);
         }
-      }
-
-      if (headingNode) {
-        contentContainer.appendChild(headingNode);
-      }
-
-      if (descriptionNode) {
-        const showMoreLess = createShowMoreLess(descriptionNode);
-        contentContainer.appendChild(descriptionNode);
-        contentContainer.appendChild(showMoreLess);
       }
 
       slide.appendChild(contentContainer);

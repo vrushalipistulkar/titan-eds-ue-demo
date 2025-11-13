@@ -14,7 +14,9 @@
               "item1": {
                 "sling:resourceType": "core/franklin/components/block/v1/block/item",
                 "name": "Video Carousel Item",
-                "model": "videocarousel-item"
+                "model": "videocarousel-item",
+                "videoUrl": "https://example.com/path-to-video.mp4",
+                "text": "<p>Supporting copy for the video plays here.</p>"
               }
             }
           }
@@ -39,52 +41,13 @@
   ],
   "models": [
     {
-      "id": "videocarousel-item",
+      "id": "videocarousel",
       "fields": [
         {
-          "component": "columns",
-          "name": "columns",
-          "label": "Slide Content",
-          "columns": 2,
-          "rows": 1,
-          "fields": [
-            {
-              "component": "container",
-              "name": "videoColumn",
-              "label": "Video",
-              "fields": [
-                {
-                  "component": "reference",
-                  "valueType": "string",
-                  "name": "video",
-                  "label": "Video Block",
-                  "description": "Select or drop a Video block here",
-                  "allowedTypes": [
-                    "block/video"
-                  ]
-                }
-              ]
-            },
-            {
-              "component": "container",
-              "name": "contentColumn",
-              "label": "Content",
-              "fields": [
-                {
-                  "component": "text",
-                  "name": "heading",
-                  "label": "Heading",
-                  "valueType": "string"
-                },
-                {
-                  "component": "richtext",
-                  "name": "description",
-                  "label": "Description",
-                  "value": "<p>Supporting copy for the video plays here.</p>"
-                }
-              ]
-            }
-          ]
+          "component": "reference",
+          "valueType": "string",
+          "name": "videocarousel-item",
+          "value": ""
         }
       ]
     }
@@ -94,26 +57,6 @@
       "id": "videocarousel",
       "components": [
         "videocarousel-item"
-      ]
-    },
-    {
-      "id": "videocarousel-item",
-      "components": [
-        "columns"
-      ]
-    },
-    {
-      "id": "columns",
-      "components": [
-        "column"
-      ]
-    },
-    {
-      "id": "column",
-      "components": [
-        "video",
-        "title",
-        "text"
       ]
     }
   ]

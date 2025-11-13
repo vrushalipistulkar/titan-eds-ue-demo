@@ -939,10 +939,11 @@
     "id": "videocarousel-item",
     "fields": [
       {
-        "component": "reference",
+        "component": "text",
         "valueType": "string",
-        "name": "video",
-        "label": "Video Block"
+        "name": "videoUrl",
+        "label": "Video URL",
+        "value": ""
       },
       {
         "component": "richtext",
