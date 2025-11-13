@@ -46,6 +46,35 @@ function loadHlsLibrary() {
   return hlsLibraryPromise;
 }
 
+aem.js:537 
+ GET http://localhost:3000/placeholders.json 404 (Not Found)
+
+aem.js:245 
+ GET http://localhost:3000/blocks/video-carousel/video-carousel.css net::ERR_ABORTED 404 (Not Found)
+aem.js:646 
+ GET http://localhost:3000/blocks/video-carousel/video-carousel.js net::ERR_ABORTED 404 (Not Found)
+watchConsoleLogs.8258a5d6.js:4 failed to load block video-carousel 
+Event {isTrusted: true, type: 'error', target: link, currentTarget: link, eventPhase: 2, …}
+watchConsoleLogs.8258a5d6.js:4 failed to load module for video-carousel TypeError: Failed to fetch dynamically imported module: http://localhost:3000/blocks/video-carousel/video-carousel.js
+watchConsoleLogs.8258a5d6.js:4 No value found for the specified keys.
+watchConsoleLogs.8258a5d6.js:4 No value found for the specified key.
+watchConsoleLogs.8258a5d6.js:4 No value found for the specified keys.
+watchConsoleLogs.8258a5d6.js:4 No value found for the specified key.
+watchConsoleLogs.8258a5d6.js:4 langCode :en
+fragment.js:24 
+ GET http://localhost:3000/en/footer.plain.html 404 (Not Found)
+watchConsoleLogs.8258a5d6.js:4 failed to load module for footer TypeError: Cannot read properties of null (reading 'firstElementChild')
+    at Module.decorate (footer.js:43:19)
+    at async aem.js:649:15
+fragment.js:24 
+ GET http://localhost:3000/en/nav.plain.html 404 (Not Found)
+watchConsoleLogs.8258a5d6.js:4 header: .icon-search-light not found; skipping search icon init
+header.js:78 Uncaught (in promise) TypeError: Cannot read properties of null (reading 'querySelectorAll')
+    at toggleAllNavSections (header.js:78:34)
+    at toggleMenu (header.js:121:3)
+    at Module.decorate (header.js:646:3)
+    at async aem.js:649:15
+﻿
 function createVideoElement(videoUrl) {
   // Handle YouTube videos
   if (videoUrl.includes('youtube') || videoUrl.includes('youtu.be')) {
