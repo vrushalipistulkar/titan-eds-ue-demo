@@ -132,6 +132,20 @@ export default async function decorate(block) {
       block.innerHTML = '';
       block.append(blockquote);
     }
+    
+    // Set the quote icon background image dynamically to handle author/publish paths
+    // Only set once globally if not already set
+    if (window.hlx && window.hlx.codeBasePath && !document.querySelector('style[data-quote-icon]')) {
+      const iconUrl = `${window.hlx.codeBasePath}/icons/testimonials-quotes-img.svg`;
+      const afterStyle = document.createElement('style');
+      afterStyle.setAttribute('data-quote-icon', 'true');
+      afterStyle.textContent = `
+        .quote blockquote::after {
+          background-image: url(${iconUrl}) !important;
+        }
+      `;
+      document.head.appendChild(afterStyle);
+    }
   } else {
     // Blockquote already exists - ensure proper structure and classes
     let quotation = blockquote.querySelector('.quote-quotation');
