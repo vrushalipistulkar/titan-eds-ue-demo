@@ -47,6 +47,30 @@ function loadHlsLibrary() {
 }
 
 function createVideoElement(videoUrl) {
+  // Handle YouTube videos
+  if (videoUrl.includes('youtube') || videoUrl.includes('youtu.be')) {
+    const url = new URL(videoUrl);
+    const usp = new URLSearchParams(url.search);
+    let vid = usp.get('v') ? encodeURIComponent(usp.get('v')) : '';
+    if (url.origin.includes('youtu.be')) {
+      [, vid] = url.pathname.split('/');
+    }
+    
+    const embedWrapper = document.createElement('div');
+    embedWrapper.style.cssText = 'left: 0; width: 100%; height: 0; position: relative; padding-bottom: 56.25%;';
+    const iframe = document.createElement('iframe');
+    iframe.src = `https://www.youtube.com${vid ? `/embed/${vid}?rel=0&v=${vid}&autoplay=1&mute=1&controls=0&disablekb=1&loop=1&playsinline=1` : url.pathname}`;
+    iframe.style.cssText = 'border: 0; top: 0; left: 0; width: 100%; height: 100%; position: absolute;';
+    iframe.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture; encrypted-media; accelerometer; gyroscope; picture-in-picture');
+    iframe.setAttribute('allowfullscreen', '');
+    iframe.setAttribute('scrolling', 'no');
+    iframe.setAttribute('title', 'Content from Youtube');
+    iframe.setAttribute('loading', 'lazy');
+    embedWrapper.appendChild(iframe);
+    return embedWrapper;
+  }
+
+  // Handle regular video files (MP4, HLS, etc.)
   const video = document.createElement('video');
   video.setAttribute('muted', 'muted');
   video.setAttribute('playsinline', 'true');
@@ -60,7 +84,14 @@ function createVideoElement(videoUrl) {
   } else {
     const source = document.createElement('source');
     source.setAttribute('data-src', videoUrl);
-    source.setAttribute('type', 'video/mp4');
+    // Determine video type from URL
+    if (videoUrl.includes('.webm')) {
+      source.setAttribute('type', 'video/webm');
+    } else if (videoUrl.includes('.mov')) {
+      source.setAttribute('type', 'video/quicktime');
+    } else {
+      source.setAttribute('type', 'video/mp4');
+    }
     video.appendChild(source);
   }
 
@@ -297,6 +328,21 @@ function bindEvents(block) {
 function extractVideoUrl(videoColumn) {
   if (!videoColumn) return '';
 
+  // First, check for anchor links (most common case from model fields)
+  const anchor = videoColumn.querySelector('a[href]');
+  if (anchor) {
+    const href = anchor.getAttribute('href');
+    // Check if it's a video URL
+    if (href && (href.includes('.mp4') || href.includes('.m3u8') || href.includes('.mov') || href.includes('.webm') || href.includes('youtube') || href.includes('youtu.be'))) {
+      return href;
+    }
+    // Also check text content if href doesn't look like a video URL
+    const text = anchor.textContent?.trim();
+    if (text && (text.startsWith('http') && (text.includes('.mp4') || text.includes('.m3u8') || text.includes('.mov') || text.includes('.webm')))) {
+      return text;
+    }
+  }
+
   // Check for data-aue-prop="videoUrl" (model field) - could be in p, div, span, or a tag
   const videoUrlElement = videoColumn.querySelector('[data-aue-prop="videoUrl"]');
   if (videoUrlElement) {
@@ -346,22 +392,15 @@ function extractVideoUrl(videoColumn) {
     }
   }
 
-  // Check for anchor links
-  const anchor = videoColumn.querySelector('a[href$=".mp4"], a[href*=".m3u8"], a[href$=".mov"], a[href$=".webm"]');
-  if (anchor) {
-    const href = anchor.getAttribute('href');
-    if (href) return href;
-  }
-
   // Check for plain text URL in the entire column
   const textLink = videoColumn.textContent?.trim();
-  if (textLink && (textLink.startsWith('http') || textLink.endsWith('.mp4') || textLink.endsWith('.m3u8') || textLink.endsWith('.mov') || textLink.endsWith('.webm'))) {
+  if (textLink && (textLink.startsWith('http') && (textLink.includes('.mp4') || textLink.includes('.m3u8') || textLink.includes('.mov') || textLink.includes('.webm')))) {
     return textLink;
   }
 
   // Check innerHTML as last resort
   const innerHtml = videoColumn.innerHTML?.trim();
-  if (innerHtml && (innerHtml.includes('http') || innerHtml.includes('.mp4') || innerHtml.includes('.m3u8'))) {
+  if (innerHtml && (innerHtml.includes('http') && (innerHtml.includes('.mp4') || innerHtml.includes('.m3u8')))) {
     // Try to extract URL from HTML
     const urlMatch = innerHtml.match(/(https?:\/\/[^\s<>"']+\.(?:mp4|m3u8|mov|webm))/i);
     if (urlMatch) return urlMatch[1];
