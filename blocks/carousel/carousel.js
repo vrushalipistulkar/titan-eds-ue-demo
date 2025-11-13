@@ -33,6 +33,31 @@ function setupSingleSlideNavigation(block, slider) {
   const nextBtn = block.querySelector('.button.next');
   const prevBtn = block.querySelector('.button.prev');
 
+  // Replace arrow icons with custom carousel navigation arrow
+  if (nextBtn || prevBtn) {
+    const arrowIconPath = `${window.hlx?.codeBasePath || ''}/icons/caoruseNaviagationArrow.svg`;
+    
+    // Update next button icon
+    if (nextBtn) {
+      const nextIcon = nextBtn.querySelector('img');
+      if (nextIcon) {
+        nextIcon.src = arrowIconPath;
+        nextIcon.dataset.iconName = 'caoruseNaviagationArrow';
+        nextIcon.style.transform = 'scaleX(-1)'; // Mirror the arrow
+      }
+    }
+    
+    // Update prev button icon (mirrored)
+    if (prevBtn) {
+      const prevIcon = prevBtn.querySelector('img');
+      if (prevIcon) {
+        prevIcon.src = arrowIconPath;
+        prevIcon.dataset.iconName = 'caoruseNaviagationArrow';
+       
+      }
+    }
+  }
+
   const move = (delta) => {
     activeIndex = (activeIndex + delta + slides.length) % slides.length;
     applyState();
