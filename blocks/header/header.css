@@ -177,7 +177,8 @@ header nav .nav-brand img {
 
 .wehealthcare-theme header nav .nav-brand img {
   width: auto;
-  height: 36.5px;
+  height: auto;
+  padding-top: 20px;
 }
 
 /* sections */
