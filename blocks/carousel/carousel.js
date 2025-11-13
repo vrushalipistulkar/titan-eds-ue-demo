@@ -53,7 +53,7 @@ function setupSingleSlideNavigation(block, slider) {
       if (prevIcon) {
         prevIcon.src = arrowIconPath;
         prevIcon.dataset.iconName = 'caoruseNaviagationArrow';
-       
+        
       }
     }
   }
@@ -68,10 +68,49 @@ function setupSingleSlideNavigation(block, slider) {
     event.stopPropagation();
     event.stopImmediatePropagation();
     move(delta);
+    // Reset auto-play timer on manual navigation
+    resetAutoPlay();
   };
 
   nextBtn?.addEventListener('click', handleClick(1), true);
   prevBtn?.addEventListener('click', handleClick(-1), true);
+
+  // Auto-play functionality - transition to next slide every 3 seconds
+  let autoPlayInterval;
+  
+  const startAutoPlay = () => {
+    autoPlayInterval = setInterval(() => {
+      move(1); // Move to next slide
+    }, 3000); // 3 seconds
+  };
+
+  const stopAutoPlay = () => {
+    if (autoPlayInterval) {
+      clearInterval(autoPlayInterval);
+      autoPlayInterval = null;
+    }
+  };
+
+  const resetAutoPlay = () => {
+    stopAutoPlay();
+    startAutoPlay();
+  };
+
+  // Pause auto-play on hover
+  block.addEventListener('mouseenter', stopAutoPlay);
+  block.addEventListener('mouseleave', startAutoPlay);
+
+  // Start auto-play
+  startAutoPlay();
+
+  // Clean up on block removal
+  const observer = new MutationObserver((mutations) => {
+    if (!document.body.contains(block)) {
+      stopAutoPlay();
+      observer.disconnect();
+    }
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
 }
 
 function detectVariantText(root) {
