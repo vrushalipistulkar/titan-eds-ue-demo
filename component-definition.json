@@ -351,7 +351,9 @@
                 "resourceType": "core/franklin/components/block/v1/block/item",
                 "template": {
                   "name": "Video Carousel Item",
-                  "model": "videocarousel-item"
+                  "model": "videocarousel-item",
+                  "videoUrl": "https://example.com/path-to-video.mp4",
+                  "text": "<p>Supporting copy for the video plays here.</p>"
                 }
               }
             }

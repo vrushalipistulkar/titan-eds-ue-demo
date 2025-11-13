@@ -297,11 +297,24 @@ function bindEvents(block) {
 function extractVideoUrl(videoColumn) {
   if (!videoColumn) return '';
 
-  // Check for data-aue-prop="videoUrl" (model field)
+  // Check for data-aue-prop="videoUrl" (model field) - could be in p, div, span, or a tag
   const videoUrlElement = videoColumn.querySelector('[data-aue-prop="videoUrl"]');
   if (videoUrlElement) {
-    const url = videoUrlElement.textContent?.trim() || videoUrlElement.getAttribute('href') || '';
-    if (url) return url;
+    // Try href first (if it's a link)
+    const href = videoUrlElement.getAttribute('href');
+    if (href) return href;
+    
+    // Then try text content
+    const url = videoUrlElement.textContent?.trim();
+    if (url && (url.startsWith('http') || url.endsWith('.mp4') || url.endsWith('.m3u8') || url.endsWith('.mov') || url.endsWith('.webm'))) {
+      return url;
+    }
+    
+    // Try innerHTML if textContent didn't work
+    const innerUrl = videoUrlElement.innerHTML?.trim();
+    if (innerUrl && (innerUrl.startsWith('http') || innerUrl.endsWith('.mp4') || innerUrl.endsWith('.m3u8') || innerUrl.endsWith('.mov') || innerUrl.endsWith('.webm'))) {
+      return innerUrl;
+    }
   }
 
   // Check for embedded video block
@@ -309,7 +322,7 @@ function extractVideoUrl(videoColumn) {
   if (embeddedVideoBlock) {
     moveInstrumentation(videoColumn, embeddedVideoBlock);
 
-    const blockAnchor = embeddedVideoBlock.querySelector('a[href$=".mp4"], a[href*=".m3u8"]');
+    const blockAnchor = embeddedVideoBlock.querySelector('a[href$=".mp4"], a[href*=".m3u8"], a[href$=".mov"], a[href$=".webm"]');
     if (blockAnchor) {
       const href = blockAnchor.getAttribute('href') || blockAnchor.textContent?.trim() || '';
       blockAnchor.parentElement?.removeChild(blockAnchor);
@@ -335,12 +348,23 @@ function extractVideoUrl(videoColumn) {
 
   // Check for anchor links
   const anchor = videoColumn.querySelector('a[href$=".mp4"], a[href*=".m3u8"], a[href$=".mov"], a[href$=".webm"]');
-  if (anchor) return anchor.getAttribute('href');
+  if (anchor) {
+    const href = anchor.getAttribute('href');
+    if (href) return href;
+  }
 
-  // Check for plain text URL
+  // Check for plain text URL in the entire column
   const textLink = videoColumn.textContent?.trim();
   if (textLink && (textLink.startsWith('http') || textLink.endsWith('.mp4') || textLink.endsWith('.m3u8') || textLink.endsWith('.mov') || textLink.endsWith('.webm'))) {
     return textLink;
+  }
+
+  // Check innerHTML as last resort
+  const innerHtml = videoColumn.innerHTML?.trim();
+  if (innerHtml && (innerHtml.includes('http') || innerHtml.includes('.mp4') || innerHtml.includes('.m3u8'))) {
+    // Try to extract URL from HTML
+    const urlMatch = innerHtml.match(/(https?:\/\/[^\s<>"']+\.(?:mp4|m3u8|mov|webm))/i);
+    if (urlMatch) return urlMatch[1];
   }
 
   return '';
@@ -368,7 +392,8 @@ export default async function decorate(block) {
     if (columns.length < 2) {
       // Ensure we have at least 2 columns
       for (let i = columns.length; i < 2; i += 1) {
-        row.appendChild(document.createElement('div'));
+        const emptyCol = document.createElement('div');
+        row.appendChild(emptyCol);
       }
     }
 
@@ -407,6 +432,12 @@ export default async function decorate(block) {
 
           videoContainer.appendChild(video);
           videoContainer.appendChild(progressBar);
+          slide.appendChild(videoContainer);
+        } else {
+          // If no video URL found, still create an empty container to maintain structure
+          const videoContainer = document.createElement('div');
+          videoContainer.classList.add('video-container', 'empty-video');
+          moveInstrumentation(videoColumn, videoContainer);
           slide.appendChild(videoContainer);
         }
       }
