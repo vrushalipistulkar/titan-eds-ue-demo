@@ -197,6 +197,7 @@ function setActiveSlide(allSlides, activeSlideIndex) {
   allSlides.forEach((slide) => {
     slide.classList.remove('active-slide');
     const video = slide.querySelector('video');
+    const iframe = slide.querySelector('iframe');
     const progressBar = slide.querySelector('.progress-bar');
 
     if (video) {
@@ -220,6 +221,14 @@ function setActiveSlide(allSlides, activeSlideIndex) {
         progressBar.style.width = '0%';
       }
     }
+
+    // Handle YouTube iframes - pause them
+    if (iframe && iframe.src.includes('youtube.com')) {
+      // YouTube iframes auto-pause when not visible, but we can reload to reset
+      const src = iframe.src;
+      iframe.src = '';
+      iframe.src = src;
+    }
   });
 
   const activeSlide = allSlides[activeSlideIndex];
@@ -227,7 +236,14 @@ function setActiveSlide(allSlides, activeSlideIndex) {
 
   activeSlide.classList.add('active-slide');
   const video = activeSlide.querySelector('video');
+  const iframe = activeSlide.querySelector('iframe');
   const progressBar = activeSlide.querySelector('.progress-bar');
+
+  // Handle YouTube iframes - they auto-play when visible
+  if (iframe && iframe.src.includes('youtube.com')) {
+    // YouTube iframe will auto-play based on URL parameters
+    return;
+  }
 
   if (!video) return;
 
@@ -466,12 +482,25 @@ export default async function decorate(block) {
           videoContainer.classList.add('video-container');
           moveInstrumentation(videoColumn, videoContainer);
 
-          const video = createVideoElement(videoUrl);
+          const videoElement = createVideoElement(videoUrl);
           const progressBar = createProgressBar();
 
-          videoContainer.appendChild(video);
+          videoContainer.appendChild(videoElement);
           videoContainer.appendChild(progressBar);
           slide.appendChild(videoContainer);
+
+          // If it's a regular video element (not YouTube iframe), load it immediately for the first slide
+          const video = videoElement.tagName === 'VIDEO' ? videoElement : null;
+          if (video && index === 0) {
+            // Load the first video immediately
+            const source = video.querySelector('source[data-src]');
+            if (source) {
+              const url = source.getAttribute('data-src');
+              source.setAttribute('src', url);
+              source.removeAttribute('data-src');
+              video.load();
+            }
+          }
         } else {
           // If no video URL found, still create an empty container to maintain structure
           const videoContainer = document.createElement('div');
