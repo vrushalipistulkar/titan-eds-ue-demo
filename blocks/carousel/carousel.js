@@ -234,9 +234,25 @@ export default function decorate(block) {
       }
 
       moveInstrumentation(row, li);
+      
+      // Append first 2 columns (image and content)
       columns.slice(0, 2).forEach((column) => {
         li.append(column);
       });
+      
+      // In Universal Editor mode, mobile image might be in a different structure
+      // Look for additional columns that might contain mobile image
+      if (columns.length >= 3) {
+        // Check columns beyond the first 2 for mobile image with data-aue-prop
+        columns.slice(2).forEach((column) => {
+          const mobileImgElement = column.querySelector('[data-aue-prop="mobileImage"]');
+          if (mobileImgElement) {
+            // Found mobile image element, hide it but keep it in DOM for processing
+            column.style.display = 'none';
+            li.append(column);
+          }
+        });
+      }
 
       const buttonContainers = li.querySelectorAll('p.button-container');
       buttonContainers.forEach((buttonContainer) => {
@@ -259,17 +275,37 @@ export default function decorate(block) {
   });
 
   slider.querySelectorAll('picture > img').forEach((img) => {
+    // Check for mobile image data from traditional authoring (data attributes)
     const imageContainer = img.closest('[data-mobile-image-src]');
-    const hasMobileImage = imageContainer && imageContainer.hasAttribute('data-mobile-image-src');
+    let hasMobileImage = imageContainer && imageContainer.hasAttribute('data-mobile-image-src');
+    let mobileImageSrc = imageContainer?.getAttribute('data-mobile-image-src');
+    let mobileImageAlt = imageContainer?.getAttribute('data-mobile-image-alt');
     
-    if (hasMobileImage) {
+    // Check for mobile image data from Universal Editor (look in parent li for mobileImage data)
+    if (!hasMobileImage) {
+      const cardItem = img.closest('li[data-aue-model="card"]');
+      if (cardItem) {
+        // Look for mobileImage in the card's data or in a sibling element
+        const mobileImageElement = cardItem.querySelector('[data-aue-prop="mobileImage"]');
+        if (mobileImageElement) {
+          const mobileImg = mobileImageElement.tagName === 'IMG' ? mobileImageElement : mobileImageElement.querySelector('img');
+          if (mobileImg && mobileImg.src) {
+            mobileImageSrc = mobileImg.src;
+            mobileImageAlt = mobileImg.alt || '';
+            hasMobileImage = true;
+          }
+        }
+      }
+    }
+    
+    if (hasMobileImage && mobileImageSrc) {
       // Get mobile image data
-      const mobileImageSrc = imageContainer.getAttribute('data-mobile-image-src');
-      const mobileImageAlt = imageContainer.getAttribute('data-mobile-image-alt');
+      const finalMobileImageSrc = mobileImageSrc;
+      const finalMobileImageAlt = mobileImageAlt;
       
       // Create optimized pictures for both desktop and mobile
       const desktopPic = createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }]);
-      const mobilePic = createOptimizedPicture(mobileImageSrc, mobileImageAlt, false, [{ width: '750' }]);
+      const mobilePic = createOptimizedPicture(finalMobileImageSrc, finalMobileImageAlt, false, [{ width: '750' }]);
       
       // Create a new picture element with responsive sources
       const responsivePicture = document.createElement('picture');
