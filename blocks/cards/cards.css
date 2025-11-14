@@ -29,21 +29,6 @@
   transform-origin: 50% 50%;
 }
 
-/* Ensure responsive images work correctly */
-.cards > ul > li picture {
-  display: block;
-  width: 100%;
-}
-
-.cards > ul > li picture source {
-  width: 100%;
-}
-
-/* Hide configuration divs (card style, CTA style, mobile image source) */
-.cards > ul > li .cards-config {
-  display: none !important;
-}
-
 .card-link .cards li:hover img{
   transform: scale(1.1); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
   width: 100%;

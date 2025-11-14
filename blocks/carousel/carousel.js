@@ -218,41 +218,10 @@ export default function decorate(block) {
       const ctaParagraph = configColumns[1]?.querySelector('p');
       const ctaStyle = ctaParagraph?.textContent?.trim() || 'default';
 
-      // Check for mobile image in column 4 (5th column)
-      // This handles both traditional authoring (5th column) and Universal Editor (mobileImage field)
-      const mobileImageColumn = columns[4];
-      const mobileImageElement = mobileImageColumn?.querySelector('picture, img');
-      
-      // Store mobile image data if it exists
-      if (mobileImageElement) {
-        const mobileImg = mobileImageElement.tagName === 'IMG' ? mobileImageElement : mobileImageElement.querySelector('img');
-        if (mobileImg && mobileImg.src) {
-          // Add a data attribute to the desktop image column to indicate mobile image exists
-          columns[0].setAttribute('data-mobile-image-src', mobileImg.src);
-          columns[0].setAttribute('data-mobile-image-alt', mobileImg.alt || '');
-        }
-      }
-
       moveInstrumentation(row, li);
-      
-      // Append first 2 columns (image and content)
       columns.slice(0, 2).forEach((column) => {
         li.append(column);
       });
-      
-      // In Universal Editor mode, mobile image might be in a different structure
-      // Look for additional columns that might contain mobile image
-      if (columns.length >= 3) {
-        // Check columns beyond the first 2 for mobile image with data-aue-prop
-        columns.slice(2).forEach((column) => {
-          const mobileImgElement = column.querySelector('[data-aue-prop="mobileImage"]');
-          if (mobileImgElement) {
-            // Found mobile image element, hide it but keep it in DOM for processing
-            column.style.display = 'none';
-            li.append(column);
-          }
-        });
-      }
 
       const buttonContainers = li.querySelectorAll('p.button-container');
       buttonContainers.forEach((buttonContainer) => {
@@ -275,80 +244,9 @@ export default function decorate(block) {
   });
 
   slider.querySelectorAll('picture > img').forEach((img) => {
-    // Check for mobile image data from traditional authoring (data attributes)
-    const imageContainer = img.closest('[data-mobile-image-src]');
-    let hasMobileImage = imageContainer && imageContainer.hasAttribute('data-mobile-image-src');
-    let mobileImageSrc = imageContainer?.getAttribute('data-mobile-image-src');
-    let mobileImageAlt = imageContainer?.getAttribute('data-mobile-image-alt');
-    
-    // Check for mobile image data from Universal Editor (look in parent li for mobileImage data)
-    if (!hasMobileImage) {
-      const cardItem = img.closest('li[data-aue-model="card"]');
-      if (cardItem) {
-        // Look for mobileImage in the card's data or in a sibling element
-        const mobileImageElement = cardItem.querySelector('[data-aue-prop="mobileImage"]');
-        if (mobileImageElement) {
-          const mobileImg = mobileImageElement.tagName === 'IMG' ? mobileImageElement : mobileImageElement.querySelector('img');
-          if (mobileImg && mobileImg.src) {
-            mobileImageSrc = mobileImg.src;
-            mobileImageAlt = mobileImg.alt || '';
-            hasMobileImage = true;
-          }
-        }
-      }
-    }
-    
-    if (hasMobileImage && mobileImageSrc) {
-      // Get mobile image data
-      const finalMobileImageSrc = mobileImageSrc;
-      const finalMobileImageAlt = mobileImageAlt;
-      
-      // Create optimized pictures for both desktop and mobile
-      const desktopPic = createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }]);
-      const mobilePic = createOptimizedPicture(finalMobileImageSrc, finalMobileImageAlt, false, [{ width: '750' }]);
-      
-      // Create a new picture element with responsive sources
-      const responsivePicture = document.createElement('picture');
-      
-      // Add mobile source (for screens < 768px)
-      const mobileSource = mobilePic.querySelector('source');
-      if (mobileSource) {
-        mobileSource.setAttribute('media', '(max-width: 767px)');
-        responsivePicture.appendChild(mobileSource);
-      }
-      
-      // Add desktop sources (for screens >= 768px)
-      const desktopSources = desktopPic.querySelectorAll('source');
-      desktopSources.forEach((source) => {
-        const clonedSource = source.cloneNode(true);
-        const existingMedia = clonedSource.getAttribute('media');
-        if (existingMedia) {
-          clonedSource.setAttribute('media', `(min-width: 768px) and ${existingMedia}`);
-        } else {
-          clonedSource.setAttribute('media', '(min-width: 768px)');
-        }
-        responsivePicture.appendChild(clonedSource);
-      });
-      
-      // Add the default img tag (fallback)
-      const defaultImg = desktopPic.querySelector('img');
-      if (defaultImg) {
-        moveInstrumentation(img, defaultImg);
-        responsivePicture.appendChild(defaultImg);
-      }
-      
-      // Replace the original picture
-      img.closest('picture').replaceWith(responsivePicture);
-      
-      // Clean up data attributes
-      imageContainer.removeAttribute('data-mobile-image-src');
-      imageContainer.removeAttribute('data-mobile-image-alt');
-    } else {
-      // No mobile image, use standard optimization
-      const optimizedPic = createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }]);
-      moveInstrumentation(img, optimizedPic.querySelector('img'));
-      img.closest('picture').replaceWith(optimizedPic);
-    }
+    const optimizedPic = createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }]);
+    moveInstrumentation(img, optimizedPic.querySelector('img'));
+    img.closest('picture').replaceWith(optimizedPic);
   });
 
   if (slider.classList.contains('single-slide-carousel')) {
