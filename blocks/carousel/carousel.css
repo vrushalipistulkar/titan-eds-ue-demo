@@ -111,6 +111,16 @@
   aspect-ratio: inherit;
 }
 
+/* Ensure responsive images work correctly */
+.carousel-container .carousel-wrapper .carousel > ul > li picture {
+  display: block;
+  width: 100%;
+}
+
+.carousel-container .carousel-wrapper .carousel > ul > li picture source {
+  width: 100%;
+}
+
 
 
 
