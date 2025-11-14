@@ -231,6 +231,18 @@
         "valueType": "string"
       },
       {
+        "component": "reference",
+        "valueType": "string",
+        "name": "mobileImage",
+        "label": "Mobile Image",
+        "multi": false
+      },
+      {
+        "component": "text",
+        "name": "mobileImageAlt",
+        "label": "Mobile Image Alt Text"
+      },
+      {
           "component": "select",
           "name": "style",
           "label": "Style",

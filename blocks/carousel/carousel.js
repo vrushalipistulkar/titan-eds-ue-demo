@@ -218,6 +218,21 @@ export default function decorate(block) {
       const ctaParagraph = configColumns[1]?.querySelector('p');
       const ctaStyle = ctaParagraph?.textContent?.trim() || 'default';
 
+      // Check for mobile image in column 4 (5th column)
+      // This handles both traditional authoring (5th column) and Universal Editor (mobileImage field)
+      const mobileImageColumn = columns[4];
+      const mobileImageElement = mobileImageColumn?.querySelector('picture, img');
+      
+      // Store mobile image data if it exists
+      if (mobileImageElement) {
+        const mobileImg = mobileImageElement.tagName === 'IMG' ? mobileImageElement : mobileImageElement.querySelector('img');
+        if (mobileImg && mobileImg.src) {
+          // Add a data attribute to the desktop image column to indicate mobile image exists
+          columns[0].setAttribute('data-mobile-image-src', mobileImg.src);
+          columns[0].setAttribute('data-mobile-image-alt', mobileImg.alt || '');
+        }
+      }
+
       moveInstrumentation(row, li);
       columns.slice(0, 2).forEach((column) => {
         li.append(column);
@@ -244,9 +259,60 @@ export default function decorate(block) {
   });
 
   slider.querySelectorAll('picture > img').forEach((img) => {
-    const optimizedPic = createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }]);
-    moveInstrumentation(img, optimizedPic.querySelector('img'));
-    img.closest('picture').replaceWith(optimizedPic);
+    const imageContainer = img.closest('[data-mobile-image-src]');
+    const hasMobileImage = imageContainer && imageContainer.hasAttribute('data-mobile-image-src');
+    
+    if (hasMobileImage) {
+      // Get mobile image data
+      const mobileImageSrc = imageContainer.getAttribute('data-mobile-image-src');
+      const mobileImageAlt = imageContainer.getAttribute('data-mobile-image-alt');
+      
+      // Create optimized pictures for both desktop and mobile
+      const desktopPic = createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }]);
+      const mobilePic = createOptimizedPicture(mobileImageSrc, mobileImageAlt, false, [{ width: '750' }]);
+      
+      // Create a new picture element with responsive sources
+      const responsivePicture = document.createElement('picture');
+      
+      // Add mobile source (for screens < 768px)
+      const mobileSource = mobilePic.querySelector('source');
+      if (mobileSource) {
+        mobileSource.setAttribute('media', '(max-width: 767px)');
+        responsivePicture.appendChild(mobileSource);
+      }
+      
+      // Add desktop sources (for screens >= 768px)
+      const desktopSources = desktopPic.querySelectorAll('source');
+      desktopSources.forEach((source) => {
+        const clonedSource = source.cloneNode(true);
+        const existingMedia = clonedSource.getAttribute('media');
+        if (existingMedia) {
+          clonedSource.setAttribute('media', `(min-width: 768px) and ${existingMedia}`);
+        } else {
+          clonedSource.setAttribute('media', '(min-width: 768px)');
+        }
+        responsivePicture.appendChild(clonedSource);
+      });
+      
+      // Add the default img tag (fallback)
+      const defaultImg = desktopPic.querySelector('img');
+      if (defaultImg) {
+        moveInstrumentation(img, defaultImg);
+        responsivePicture.appendChild(defaultImg);
+      }
+      
+      // Replace the original picture
+      img.closest('picture').replaceWith(responsivePicture);
+      
+      // Clean up data attributes
+      imageContainer.removeAttribute('data-mobile-image-src');
+      imageContainer.removeAttribute('data-mobile-image-alt');
+    } else {
+      // No mobile image, use standard optimization
+      const optimizedPic = createOptimizedPicture(img.src, img.alt, false, [{ width: '750' }]);
+      moveInstrumentation(img, optimizedPic.querySelector('img'));
+      img.closest('picture').replaceWith(optimizedPic);
+    }
   });
 
   if (slider.classList.contains('single-slide-carousel')) {
