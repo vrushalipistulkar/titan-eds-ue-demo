@@ -22,8 +22,7 @@ function loadAT() {
       "at_property": "549d426b-0bcc-be60-ce27-b9923bfcad4f"
     };
   }
-    // Commented out - at.js is now loaded directly in head.html
-    // loadScript(window.hlx.codeBasePath+'/scripts/at-lsig.js');
+    loadScript(window.hlx.codeBasePath+'/scripts/at-lsig.js');
   
 }
 // Adobe Target - end
