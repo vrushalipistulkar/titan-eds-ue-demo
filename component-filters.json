@@ -24,6 +24,7 @@
       "text",
       "title",
       "quote",
+      "tabs",
       "videocarousel",
       "video",
       "search",
@@ -57,6 +58,12 @@
     "id": "columns",
     "components": [
       "column"
+    ]
+  },
+  {
+    "id": "tabs",
+    "components": [
+      "tabs-item"
     ]
   },
   {
