@@ -15,19 +15,19 @@ export default async function decorate(block) {
                 <img src="${imgPath}/2656WM01_1.jpg" alt="Product Image 1">
               </div>
               <div class="pdp-thumbnail">
-                <img src="${imgPath}/2656WM01_2%20(1).jpg" alt="Product Image 2">
+                <img src="${imgPath}/2656WM01_2.jpg" alt="Product Image 2">
               </div>
               <div class="pdp-thumbnail">
-                <img src="${imgPath}/2656WM01_3%20(1).jpg" alt="Product Image 3">
+                <img src="${imgPath}/2656WM01_3.jpg" alt="Product Image 3">
               </div>
               <div class="pdp-thumbnail">
-                <img src="${imgPath}/2656WM01_4%20(1).jpg" alt="Product Image 4">
+                <img src="${imgPath}/2656WM01_4.jpg" alt="Product Image 4">
               </div>
               <div class="pdp-thumbnail">
-                <img src="${imgPath}/2656WM01_5%20(1).jpg" alt="Product Image 5">
+                <img src="${imgPath}/2656WM01_5.jpg" alt="Product Image 5">
               </div>
               <div class="pdp-thumbnail">
-                <img src="${imgPath}/2656WM01_6%20(1).jpg" alt="Product Image 6">
+                <img src="${imgPath}/2656WM01_6.jpg" alt="Product Image 6">
               </div>
             </div>
             <div class="pdp-main-image">
@@ -143,33 +143,33 @@ export default async function decorate(block) {
       main: `${imgPath}/2656WM01_1.jpg`,
       thumbnails: [
         `${imgPath}/2656WM01_1.jpg`,
-        `${imgPath}/2656WM01_2%20(1).jpg`,
-        `${imgPath}/2656WM01_3%20(1).jpg`,
-        `${imgPath}/2656WM01_4%20(1).jpg`,
-        `${imgPath}/2656WM01_5%20(1).jpg`,
-        `${imgPath}/2656WM01_6%20(1).jpg`,
+        `${imgPath}/2656WM01_2.jpg`,
+        `${imgPath}/2656WM01_3.jpg`,
+        `${imgPath}/2656WM01_4.jpg`,
+        `${imgPath}/2656WM01_5.jpg`,
+        `${imgPath}/2656WM01_6.jpg`,
       ],
     },
     white: {
-      main: `${imgPath}/2656BM01_1%20(1).jpg`,
+      main: `${imgPath}/2656BM01_1.jpg`,
       thumbnails: [
-        `${imgPath}/2656BM01_1%20(1).jpg`,
-        `${imgPath}/2656BM01_2%20(1).jpg`,
-        `${imgPath}/2656BM01_3%20(1).jpg`,
-        `${imgPath}/2656BM01_4%20(1).jpg`,
-        `${imgPath}/2656BM01_5%20(1).jpg`,
-        `${imgPath}/2656BM01_6%20(1).jpg`,
+        `${imgPath}/2656BM01_1.jpg`,
+        `${imgPath}/2656BM01_2.jpg`,
+        `${imgPath}/2656BM01_3.jpg`,
+        `${imgPath}/2656BM01_4.jpg`,
+        `${imgPath}/2656BM01_5.jpg`,
+        `${imgPath}/2656BM01_6.jpg`,
       ],
     },
     blue: {
-      main: `${imgPath}/2656YL01_1%20(1).jpg`,
+      main: `${imgPath}/2656YL01_1.jpg`,
       thumbnails: [
-        `${imgPath}/2656YL01_1%20(1).jpg`,
-        `${imgPath}/2656YL01_2%20(1).jpg`,
+        `${imgPath}/2656YL01_1.jpg`,
+        `${imgPath}/2656YL01_2.jpg`,
         `${imgPath}/2656YL01_3.jpg`,
         `${imgPath}/2656YL01_4.jpg`,
-        `${imgPath}/2656YL01_5%20(1).jpg`,
-        `${imgPath}/2656YL01_6%20(1).jpg`,
+        `${imgPath}/2656YL01_5.jpg`,
+        `${imgPath}/2656YL01_6.jpg`,
       ],
     },
   };
