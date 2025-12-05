@@ -143,11 +143,11 @@ export default async function decorate(block) {
       main: `${imgPath}/2656WM01_1.jpg`,
       mainLarge: [
         `${imgPath}/2656WM01_1.jpg`,
-        `${imgPath}/2656WM01_2 (1).jpg`,
-        `${imgPath}/2656WM01_3 (1).jpg`,
-        `${imgPath}/2656WM01_4 (1).jpg`,
-        `${imgPath}/2656WM01_5 (1).jpg`,
-        `${imgPath}/2656WM01_6 (1).jpg`,
+        `${imgPath}/2656WM01_2.jpg`,
+        `${imgPath}/2656WM01_3.jpg`,
+        `${imgPath}/2656WM01_4.jpg`,
+        `${imgPath}/2656WM01_5.jpg`,
+        `${imgPath}/2656WM01_6.jpg`,
       ],
       thumbnails: [
         `${imgPath}/2656WM01_1.jpg`,
@@ -159,14 +159,14 @@ export default async function decorate(block) {
       ],
     },
     white: {
-      main: `${imgPath}/2656BM01_1 (1).jpg`,
+      main: `${imgPath}/2656BM01_1.jpg`,
       mainLarge: [
-        `${imgPath}/2656BM01_1 (1).jpg`,
-        `${imgPath}/2656BM01_2 (1).jpg`,
-        `${imgPath}/2656BM01_3 (1).jpg`,
-        `${imgPath}/2656BM01_4 (1).jpg`,
-        `${imgPath}/2656BM01_5 (1).jpg`,
-        `${imgPath}/2656BM01_6 (1).jpg`,
+        `${imgPath}/2656BM01_1.jpg`,
+        `${imgPath}/2656BM01_2.jpg`,
+        `${imgPath}/2656BM01_3.jpg`,
+        `${imgPath}/2656BM01_4.jpg`,
+        `${imgPath}/2656BM01_5.jpg`,
+        `${imgPath}/2656BM01_6.jpg`,
       ],
       thumbnails: [
         `${imgPath}/2656BM01_1.jpg`,
@@ -178,14 +178,14 @@ export default async function decorate(block) {
       ],
     },
     blue: {
-      main: `${imgPath}/2656YL01_1 (1).jpg`,
+      main: `${imgPath}/2656YL01_1.jpg`,
       mainLarge: [
-        `${imgPath}/2656YL01_1 (1).jpg`,
-        `${imgPath}/2656YL01_2 (1).jpg`,
+        `${imgPath}/2656YL01_1.jpg`,
+        `${imgPath}/2656YL01_2.jpg`,
         `${imgPath}/2656YL01_3.jpg`,
         `${imgPath}/2656YL01_4.jpg`,
-        `${imgPath}/2656YL01_5 (1).jpg`,
-        `${imgPath}/2656YL01_6 (1).jpg`,
+        `${imgPath}/2656YL01_5.jpg`,
+        `${imgPath}/2656YL01_6.jpg`,
       ],
       thumbnails: [
         `${imgPath}/2656YL01_1.jpg`,
