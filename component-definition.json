@@ -750,7 +750,7 @@
         },
         {
           "title": "PDP TitanEdge",
-          "id": "pdp-TitanEdge",
+          "id": "pdp-titanedge",
           "plugins": {
             "xwalk": {
               "page": {
