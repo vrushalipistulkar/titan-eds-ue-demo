@@ -1,4 +1,8 @@
 export default async function decorate(block) {
+  // Get the base path for images (relative to the block)
+  const basePath = new URL('.', import.meta.url).pathname;
+  const imgPath = `${basePath}imgs`;
+  
   // Check if block is empty (when added in UE)
   if (!block.querySelector('.pdp-container')) {
     // Create the default HTML structure
@@ -8,26 +12,26 @@ export default async function decorate(block) {
           <div class="pdp-images">
             <div class="pdp-image-gallery">
               <div class="pdp-thumbnail active">
-                <img src="/blocks/pdp/imgs/2656WM01_1.jpg" alt="Product Image 1">
+                <img src="${imgPath}/2656WM01_1.jpg" alt="Product Image 1">
               </div>
               <div class="pdp-thumbnail">
-                <img src="/blocks/pdp/imgs/2656WM01_2%20(1).jpg" alt="Product Image 2">
+                <img src="${imgPath}/2656WM01_2%20(1).jpg" alt="Product Image 2">
               </div>
               <div class="pdp-thumbnail">
-                <img src="/blocks/pdp/imgs/2656WM01_3%20(1).jpg" alt="Product Image 3">
+                <img src="${imgPath}/2656WM01_3%20(1).jpg" alt="Product Image 3">
               </div>
               <div class="pdp-thumbnail">
-                <img src="/blocks/pdp/imgs/2656WM01_4%20(1).jpg" alt="Product Image 4">
+                <img src="${imgPath}/2656WM01_4%20(1).jpg" alt="Product Image 4">
               </div>
               <div class="pdp-thumbnail">
-                <img src="/blocks/pdp/imgs/2656WM01_5%20(1).jpg" alt="Product Image 5">
+                <img src="${imgPath}/2656WM01_5%20(1).jpg" alt="Product Image 5">
               </div>
               <div class="pdp-thumbnail">
-                <img src="/blocks/pdp/imgs/2656WM01_6%20(1).jpg" alt="Product Image 6">
+                <img src="${imgPath}/2656WM01_6%20(1).jpg" alt="Product Image 6">
               </div>
             </div>
             <div class="pdp-main-image">
-              <img src="/blocks/pdp/imgs/2656WM01_1.jpg" alt="Product Main Image">
+              <img src="${imgPath}/2656WM01_1.jpg" alt="Product Main Image">
             </div>
           </div>
           <div class="product-detail">
@@ -136,36 +140,36 @@ export default async function decorate(block) {
   // Product image sets for different dial colors
   const imageSets = {
     silver: {
-      main: '/blocks/pdp/imgs/2656WM01_1.jpg',
+      main: `${imgPath}/2656WM01_1.jpg`,
       thumbnails: [
-        '/blocks/pdp/imgs/2656WM01_1.jpg',
-        '/blocks/pdp/imgs/2656WM01_2%20(1).jpg',
-        '/blocks/pdp/imgs/2656WM01_3%20(1).jpg',
-        '/blocks/pdp/imgs/2656WM01_4%20(1).jpg',
-        '/blocks/pdp/imgs/2656WM01_5%20(1).jpg',
-        '/blocks/pdp/imgs/2656WM01_6%20(1).jpg',
+        `${imgPath}/2656WM01_1.jpg`,
+        `${imgPath}/2656WM01_2%20(1).jpg`,
+        `${imgPath}/2656WM01_3%20(1).jpg`,
+        `${imgPath}/2656WM01_4%20(1).jpg`,
+        `${imgPath}/2656WM01_5%20(1).jpg`,
+        `${imgPath}/2656WM01_6%20(1).jpg`,
       ],
     },
     white: {
-      main: '/blocks/pdp/imgs/2656BM01_1%20(1).jpg',
+      main: `${imgPath}/2656BM01_1%20(1).jpg`,
       thumbnails: [
-        '/blocks/pdp/imgs/2656BM01_1%20(1).jpg',
-        '/blocks/pdp/imgs/2656BM01_2%20(1).jpg',
-        '/blocks/pdp/imgs/2656BM01_3%20(1).jpg',
-        '/blocks/pdp/imgs/2656BM01_4%20(1).jpg',
-        '/blocks/pdp/imgs/2656BM01_5%20(1).jpg',
-        '/blocks/pdp/imgs/2656BM01_6%20(1).jpg',
+        `${imgPath}/2656BM01_1%20(1).jpg`,
+        `${imgPath}/2656BM01_2%20(1).jpg`,
+        `${imgPath}/2656BM01_3%20(1).jpg`,
+        `${imgPath}/2656BM01_4%20(1).jpg`,
+        `${imgPath}/2656BM01_5%20(1).jpg`,
+        `${imgPath}/2656BM01_6%20(1).jpg`,
       ],
     },
     blue: {
-      main: '/blocks/pdp/imgs/2656YL01_1%20(1).jpg',
+      main: `${imgPath}/2656YL01_1%20(1).jpg`,
       thumbnails: [
-        '/blocks/pdp/imgs/2656YL01_1%20(1).jpg',
-        '/blocks/pdp/imgs/2656YL01_2%20(1).jpg',
-        '/blocks/pdp/imgs/2656YL01_3.jpg',
-        '/blocks/pdp/imgs/2656YL01_4.jpg',
-        '/blocks/pdp/imgs/2656YL01_5%20(1).jpg',
-        '/blocks/pdp/imgs/2656YL01_6%20(1).jpg',
+        `${imgPath}/2656YL01_1%20(1).jpg`,
+        `${imgPath}/2656YL01_2%20(1).jpg`,
+        `${imgPath}/2656YL01_3.jpg`,
+        `${imgPath}/2656YL01_4.jpg`,
+        `${imgPath}/2656YL01_5%20(1).jpg`,
+        `${imgPath}/2656YL01_6%20(1).jpg`,
       ],
     },
   };
