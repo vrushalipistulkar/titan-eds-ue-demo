@@ -141,6 +141,14 @@ export default async function decorate(block) {
   const imageSets = {
     silver: {
       main: `${imgPath}/2656WM01_1.jpg`,
+      mainLarge: [
+        `${imgPath}/2656WM01_1.jpg`,
+        `${imgPath}/2656WM01_2 (1).jpg`,
+        `${imgPath}/2656WM01_3 (1).jpg`,
+        `${imgPath}/2656WM01_4 (1).jpg`,
+        `${imgPath}/2656WM01_5 (1).jpg`,
+        `${imgPath}/2656WM01_6 (1).jpg`,
+      ],
       thumbnails: [
         `${imgPath}/2656WM01_1.jpg`,
         `${imgPath}/2656WM01_2.jpg`,
@@ -151,7 +159,15 @@ export default async function decorate(block) {
       ],
     },
     white: {
-      main: `${imgPath}/2656BM01_1.jpg`,
+      main: `${imgPath}/2656BM01_1 (1).jpg`,
+      mainLarge: [
+        `${imgPath}/2656BM01_1 (1).jpg`,
+        `${imgPath}/2656BM01_2 (1).jpg`,
+        `${imgPath}/2656BM01_3 (1).jpg`,
+        `${imgPath}/2656BM01_4 (1).jpg`,
+        `${imgPath}/2656BM01_5 (1).jpg`,
+        `${imgPath}/2656BM01_6 (1).jpg`,
+      ],
       thumbnails: [
         `${imgPath}/2656BM01_1.jpg`,
         `${imgPath}/2656BM01_2.jpg`,
@@ -162,7 +178,15 @@ export default async function decorate(block) {
       ],
     },
     blue: {
-      main: `${imgPath}/2656YL01_1.jpg`,
+      main: `${imgPath}/2656YL01_1 (1).jpg`,
+      mainLarge: [
+        `${imgPath}/2656YL01_1 (1).jpg`,
+        `${imgPath}/2656YL01_2 (1).jpg`,
+        `${imgPath}/2656YL01_3.jpg`,
+        `${imgPath}/2656YL01_4.jpg`,
+        `${imgPath}/2656YL01_5 (1).jpg`,
+        `${imgPath}/2656YL01_6 (1).jpg`,
+      ],
       thumbnails: [
         `${imgPath}/2656YL01_1.jpg`,
         `${imgPath}/2656YL01_2.jpg`,
@@ -179,11 +203,17 @@ export default async function decorate(block) {
   const thumbnails = block.querySelectorAll('.pdp-thumbnail');
   const mainImage = block.querySelector('.pdp-main-image img');
   
+  // Store the current color variant
+  let currentVariant = 'silver';
+  
   if (imageGallery && thumbnails.length > 0 && mainImage) {
-    thumbnails.forEach((thumb) => {
+    thumbnails.forEach((thumb, index) => {
       thumb.addEventListener('click', () => {
-        const newSrc = thumb.querySelector('img').src;
-        mainImage.src = newSrc;
+        // Use the high-res image for main display
+        const imageSet = imageSets[currentVariant];
+        if (imageSet && imageSet.mainLarge && imageSet.mainLarge[index]) {
+          mainImage.src = imageSet.mainLarge[index];
+        }
         
         // Update active thumbnail
         thumbnails.forEach((t) => t.classList.remove('active'));
@@ -197,12 +227,15 @@ export default async function decorate(block) {
     const imageSet = imageSets[colorKey];
     if (!imageSet) return;
     
-    // Update main image
+    // Update current variant
+    currentVariant = colorKey;
+    
+    // Update main image with high-res version
     if (mainImage) {
       mainImage.src = imageSet.main;
     }
     
-    // Update thumbnails
+    // Update thumbnails with small versions
     const thumbImgs = block.querySelectorAll('.pdp-thumbnail img');
     thumbImgs.forEach((img, index) => {
       if (imageSet.thumbnails[index]) {
