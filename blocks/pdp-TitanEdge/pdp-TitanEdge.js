@@ -12,26 +12,26 @@ export default async function decorate(block) {
           <div class="pdp-images">
             <div class="pdp-image-gallery">
               <div class="pdp-thumbnail active">
-                <img src="${imgPath}/2777KD01_1 (1).jpg" alt="Product Image 1">
+                <img src="${imgPath}/2777KD01_1.jpg" alt="Product Image 1">
               </div>
               <div class="pdp-thumbnail">
-                <img src="${imgPath}/2777KD01_2 (1).jpg" alt="Product Image 2">
+                <img src="${imgPath}/2777KD01_2.jpg" alt="Product Image 2">
               </div>
               <div class="pdp-thumbnail">
-                <img src="${imgPath}/2777KD01_3 (1).jpg" alt="Product Image 3">
+                <img src="${imgPath}/2777KD01_3.jpg" alt="Product Image 3">
               </div>
               <div class="pdp-thumbnail">
-                <img src="${imgPath}/2777KD01_4 (1).jpg" alt="Product Image 4">
+                <img src="${imgPath}/2777KD01_4.jpg" alt="Product Image 4">
               </div>
               <div class="pdp-thumbnail">
-                <img src="${imgPath}/2777KD01_5 (1).jpg" alt="Product Image 5">
+                <img src="${imgPath}/2777KD01_5.jpg" alt="Product Image 5">
               </div>
               <div class="pdp-thumbnail">
-                <img src="${imgPath}/2777KD01_6 (1).jpg" alt="Product Image 6">
+                <img src="${imgPath}/2777KD01_6.jpg" alt="Product Image 6">
               </div>
             </div>
             <div class="pdp-main-image">
-              <img src="${imgPath}/2777KD01_1 (1).jpg" alt="Product Main Image">
+              <img src="${imgPath}/2777KD01_1.jpg" alt="Product Main Image">
             </div>
           </div>
           <div class="product-detail">
@@ -144,60 +144,60 @@ export default async function decorate(block) {
   // Product image sets for different dial colors
   const imageSets = {
     black: {
-      main: `${imgPath}/2777KD01_1 (1).jpg`,
+      main: `${imgPath}/2777KD01_1.jpg`,
       mainLarge: [
-        `${imgPath}/2777KD01_1 (1).jpg`,
-        `${imgPath}/2777KD01_2 (1).jpg`,
-        `${imgPath}/2777KD01_3 (1).jpg`,
-        `${imgPath}/2777KD01_4 (1).jpg`,
-        `${imgPath}/2777KD01_5 (1).jpg`,
-        `${imgPath}/2777KD01_6 (1).jpg`,
+        `${imgPath}/2777KD01_1.jpg`,
+        `${imgPath}/2777KD01_2.jpg`,
+        `${imgPath}/2777KD01_3.jpg`,
+        `${imgPath}/2777KD01_4.jpg`,
+        `${imgPath}/2777KD01_5.jpg`,
+        `${imgPath}/2777KD01_6.jpg`,
       ],
       thumbnails: [
-        `${imgPath}/2777KD01_1 (1).jpg`,
-        `${imgPath}/2777KD01_2 (1).jpg`,
-        `${imgPath}/2777KD01_3 (1).jpg`,
-        `${imgPath}/2777KD01_4 (1).jpg`,
-        `${imgPath}/2777KD01_5 (1).jpg`,
-        `${imgPath}/2777KD01_6 (1).jpg`,
+        `${imgPath}/2777KD01_1.jpg`,
+        `${imgPath}/2777KD01_2.jpg`,
+        `${imgPath}/2777KD01_3.jpg`,
+        `${imgPath}/2777KD01_4.jpg`,
+        `${imgPath}/2777KD01_5.jpg`,
+        `${imgPath}/2777KD01_6.jpg`,
       ],
     },
     silver: {
-      main: `${imgPath}/2777KD01_1 (1).jpg`,
+      main: `${imgPath}/2777KD01_1.jpg`,
       mainLarge: [
-        `${imgPath}/2777KD01_1 (1).jpg`,
-        `${imgPath}/2777KD01_2 (1).jpg`,
-        `${imgPath}/2777KD01_3 (1).jpg`,
-        `${imgPath}/2777KD01_4 (1).jpg`,
-        `${imgPath}/2777KD01_5 (1).jpg`,
-        `${imgPath}/2777KD01_6 (1).jpg`,
+        `${imgPath}/2777KD01_1.jpg`,
+        `${imgPath}/2777KD01_2.jpg`,
+        `${imgPath}/2777KD01_3.jpg`,
+        `${imgPath}/2777KD01_4.jpg`,
+        `${imgPath}/2777KD01_5.jpg`,
+        `${imgPath}/2777KD01_6.jpg`,
       ],
       thumbnails: [
-        `${imgPath}/2777KD01_1 (1).jpg`,
-        `${imgPath}/2777KD01_2 (1).jpg`,
-        `${imgPath}/2777KD01_3 (1).jpg`,
-        `${imgPath}/2777KD01_4 (1).jpg`,
-        `${imgPath}/2777KD01_5 (1).jpg`,
-        `${imgPath}/2777KD01_6 (1).jpg`,
+        `${imgPath}/2777KD01_1.jpg`,
+        `${imgPath}/2777KD01_2.jpg`,
+        `${imgPath}/2777KD01_3.jpg`,
+        `${imgPath}/2777KD01_4.jpg`,
+        `${imgPath}/2777KD01_5.jpg`,
+        `${imgPath}/2777KD01_6.jpg`,
       ],
     },
     blue: {
-      main: `${imgPath}/2777KD01_1 (1).jpg`,
+      main: `${imgPath}/2777KD01_1.jpg`,
       mainLarge: [
-        `${imgPath}/2777KD01_1 (1).jpg`,
-        `${imgPath}/2777KD01_2 (1).jpg`,
-        `${imgPath}/2777KD01_3 (1).jpg`,
-        `${imgPath}/2777KD01_4 (1).jpg`,
-        `${imgPath}/2777KD01_5 (1).jpg`,
-        `${imgPath}/2777KD01_6 (1).jpg`,
+        `${imgPath}/2777KD01_1.jpg`,
+        `${imgPath}/2777KD01_2.jpg`,
+        `${imgPath}/2777KD01_3.jpg`,
+        `${imgPath}/2777KD01_4.jpg`,
+        `${imgPath}/2777KD01_5.jpg`,
+        `${imgPath}/2777KD01_6.jpg`,
       ],
       thumbnails: [
-        `${imgPath}/2777KD01_1 (1).jpg`,
-        `${imgPath}/2777KD01_2 (1).jpg`,
-        `${imgPath}/2777KD01_3 (1).jpg`,
-        `${imgPath}/2777KD01_4 (1).jpg`,
-        `${imgPath}/2777KD01_5 (1).jpg`,
-        `${imgPath}/2777KD01_6 (1).jpg`,
+        `${imgPath}/2777KD01_1.jpg`,
+        `${imgPath}/2777KD01_2.jpg`,
+        `${imgPath}/2777KD01_3.jpg`,
+        `${imgPath}/2777KD01_4.jpg`,
+        `${imgPath}/2777KD01_5.jpg`,
+        `${imgPath}/2777KD01_6.jpg`,
       ],
     },
   };
