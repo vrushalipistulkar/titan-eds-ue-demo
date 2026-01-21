@@ -118,7 +118,7 @@ export default async function decorate(block) {
     <div class="products-list-container">
       <div class="products-list-header">
         <h2 class="products-list-title">Our Products</h2>
-        <p class="products-list-count">${products.length} products available</p>
+       <!-- <p class="products-list-count">${products.length} products available</p> -->
       </div>
       <div class="products-list-grid">
         ${productsHTML}
