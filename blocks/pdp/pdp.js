@@ -1,277 +1,232 @@
-export default async function decorate(block) {
-  // Get the base path for images (relative to the block)
-  const basePath = new URL('.', import.meta.url).pathname;
-  const imgPath = `${basePath}imgs`;
+// Function to get URL parameter
+function getUrlParameter(name) {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(name);
+}
+
+// Function to fetch product data from API
+async function fetchProductData(sku) {
+  try {
+    const apiUrl = 'https://author-p121857-e1377564.adobeaemcloud.com/content/titan-services/products';
+    const credentials = btoa('internaluser:internaluser'); // Base64 encode credentials
+    
+    console.log('Fetching from API:', apiUrl);
+    console.log('Authorization header:', `Basic ${credentials}`);
+    
+    const response = await fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Basic ${credentials}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    console.log('Response status:', response.status);
+    console.log('Response OK:', response.ok);
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Error response:', errorText);
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    
+    console.log('API Response:', data);
+    console.log('Looking for SKU:', sku);
+    
+    // Find the product with matching SKU
+    // Handle both direct array and nested data structure
+    let products = [];
+    if (Array.isArray(data)) {
+      products = data;
+    } else if (data && data.data && Array.isArray(data.data)) {
+      products = data.data;
+    }
+    
+    const product = products.find(p => p.sku === sku);
+    console.log('Found product:', product);
+    
+    return product || null;
+  } catch (error) {
+    console.error('Error fetching product data:', error);
+    return null;
+  }
+}
+
+// Function to calculate discount percentage
+function calculateDiscount(price, salePrice) {
+  if (!price || !salePrice) return 0;
+  const discount = ((price - salePrice) / price) * 100;
+  return Math.round(discount);
+}
+
+// Function to create PDP HTML from product data
+function createPDPHTML(productData, sku) {
+  if (!productData) {
+    return `<div class="pdp-error">
+      <h2>Product not found</h2>
+      <p>SKU "${sku}" was not found in the product catalog.</p>
+      <p>Please check the browser console for more details.</p>
+    </div>`;
+  }
   
-  // Check if block is empty (when added in UE)
-  if (!block.querySelector('.pdp-container')) {
-    // Create the default HTML structure
-    block.innerHTML = `
-      <div class="pdp-container">
-        <div class="product-wrapper">
-          <div class="pdp-images">
-            <div class="pdp-image-gallery">
-              <div class="pdp-thumbnail active">
-                <img src="${imgPath}/2656WM01_1.jpg" alt="Product Image 1">
-              </div>
-              <div class="pdp-thumbnail">
-                <img src="${imgPath}/2656WM01_2.jpg" alt="Product Image 2">
-              </div>
-              <div class="pdp-thumbnail">
-                <img src="${imgPath}/2656WM01_3.jpg" alt="Product Image 3">
-              </div>
-              <div class="pdp-thumbnail">
-                <img src="${imgPath}/2656WM01_4.jpg" alt="Product Image 4">
-              </div>
-              <div class="pdp-thumbnail">
-                <img src="${imgPath}/2656WM01_5.jpg" alt="Product Image 5">
-              </div>
-              <div class="pdp-thumbnail">
-                <img src="${imgPath}/2656WM01_6.jpg" alt="Product Image 6">
-              </div>
-            </div>
-            <div class="pdp-main-image">
-              <img src="${imgPath}/2656WM01_1.jpg" alt="Product Main Image">
+  // Parse images - limit to 4 images
+  const imageUrls = productData.image_url ? productData.image_url.split(',').slice(0, 4) : [];
+  const mainImage = productData.main_image || (imageUrls.length > 0 ? imageUrls[0] : '');
+  
+  // Create thumbnail HTML
+  const thumbnailsHTML = imageUrls.map((url, index) => `
+    <div class="pdp-thumbnail ${index === 0 ? 'active' : ''}">
+      <img src="${url.trim()}" alt="Product Image ${index + 1}">
+    </div>
+  `).join('');
+  
+  // Calculate discount
+  const discount = calculateDiscount(parseFloat(productData.price), parseFloat(productData.sale_price));
+  
+  // Create specifications HTML
+  const specifications = [
+    { label: 'Brand', value: productData.brand },
+    { label: 'Gender', value: productData.gender },
+    { label: 'Glass Material', value: productData.glass_material },
+    { label: 'Strap Material', value: productData.strap_material },
+    { label: 'Strap Color', value: productData.strap_color },
+    { label: 'Function', value: productData.function },
+    { label: 'Lock Mechanism', value: productData.lock_mechanism },
+    { label: 'Movement', value: productData.movement },
+    { label: 'Dial Color', value: productData.dial_color },
+    { label: 'Case Shape', value: productData.case_shape },
+    { label: 'Case Material', value: productData.case_material },
+    { label: 'Case Length', value: productData.case_length },
+    { label: 'Case Width', value: productData.case_width },
+    { label: 'Case Thickness', value: productData.case_thickness },
+  ].filter(spec => spec.value); // Only include specs with values
+  
+  const specificationsHTML = specifications.map(spec => `
+    <div class="pdp-spec-row">
+      <div class="pdp-spec-label">${spec.label}:</div>
+      <div class="pdp-spec-value">${spec.value}</div>
+    </div>
+  `).join('');
+  
+  return `
+    <div class="pdp-container">
+      <div class="product-wrapper">
+        <div class="pdp-images">
+          <div class="pdp-image-gallery">
+            ${thumbnailsHTML}
+          </div>
+          <div class="pdp-main-image">
+            <img src="${mainImage}" alt="${productData.name}">
+          </div>
+        </div>
+        <div class="product-detail">
+          <div class="pdp-brand">${productData.brand || ''}</div>
+          <h1 class="pdp-title">${productData.name || ''}</h1>
+          <div class="pdp-sku">${productData.sku || ''}</div>
+          <div class="pdp-tag">${productData.tag || ''}</div>
+          
+          <div class="pdp-price">
+            <span class="pdp-current-price">${productData.currency} ${parseFloat(productData.sale_price).toLocaleString('en-IN')}</span>
+            ${productData.price && productData.price !== productData.sale_price ? `
+              <span class="pdp-original-price">${productData.currency} ${parseFloat(productData.price).toLocaleString('en-IN')}</span>
+              <span class="pdp-discount">${discount}% OFF</span>
+            ` : ''}
+          </div>
+
+          <div class="pdp-availability">
+            <span class="pdp-availability-status ${productData.availability_status === 'In Stock' ? 'in-stock' : 'out-of-stock'}">
+              ${productData.availability_status || 'Check Availability'}
+            </span>
+          </div>
+
+          <div class="pdp-description">
+            <p>${productData.description || ''}</p>
+          </div>
+
+          <div class="pdp-quantity">
+            <span class="pdp-quantity-label">Quantity</span>
+            <div class="pdp-quantity-selector">
+              <button class="quantity-decrease" aria-label="Decrease quantity">−</button>
+              <input type="number" class="quantity-input" value="1" min="1" readonly>
+              <button class="quantity-increase" aria-label="Increase quantity">+</button>
             </div>
           </div>
-          <div class="product-detail">
-            <div class="pdp-brand">Titan</div>
-            <h1 class="pdp-title">Titan Lagan Quartz Analog with Day and Date Women Watch - Silver Dial with Rose Gold Colour Metal Strap</h1>
-            <div class="pdp-sku">SKU: 2656WM01</div>
-            
-            <div class="pdp-rating">
-              <span class="pdp-stars">★★★★☆</span>
-              <span class="pdp-rating-count">(248 reviews)</span>
-            </div>
 
-            <div class="pdp-price">
-              <span class="pdp-current-price">₹8,995</span>
-              <span class="pdp-original-price">₹12,995</span>
-              <span class="pdp-discount">31% OFF</span>
-            </div>
+          <div class="pdp-actions">
+            <button class="pdp-add-to-cart">Add to Cart</button>
+            <button class="pdp-buy-now">Buy Now</button>
+          </div>
 
-            <div class="pdp-description">
-              <p>Elevate your style with this elegant Titan Lagan watch featuring a sophisticated quartz analog movement with day and date display. The silver dial perfectly complements the rose gold metal strap, creating a timeless piece for any occasion.</p>
-            </div>
-
-            <div class="pdp-options">
-              <div class="pdp-option">
-                <label class="pdp-option-label">Dial Color</label>
-                <div class="pdp-option-values">
-                  <div class="pdp-option-value selected">Silver</div>
-                  <div class="pdp-option-value">White</div>
-                  <div class="pdp-option-value">Blue</div>
-                </div>
-              </div>
-
-              <div class="pdp-option">
-                <label class="pdp-option-label">Strap Color</label>
-                <div class="pdp-option-values">
-                  <div class="pdp-option-value selected">Rose Gold</div>
-                  <div class="pdp-option-value">Silver</div>
-                  <div class="pdp-option-value">Gold</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="pdp-quantity">
-              <span class="pdp-quantity-label">Quantity</span>
-              <div class="pdp-quantity-selector">
-                <button class="quantity-decrease" aria-label="Decrease quantity">−</button>
-                <input type="number" class="quantity-input" value="1" min="1" readonly>
-                <button class="quantity-increase" aria-label="Increase quantity">+</button>
-              </div>
-            </div>
-
-            <div class="pdp-actions">
-              <button class="pdp-add-to-cart">Add to Cart</button>
-              <button class="pdp-buy-now">Buy Now</button>
-            </div>
-
-            <div class="pdp-features">
-              <h3 class="pdp-features-title">Key Features</h3>
-              <ul class="pdp-features-list">
-                <li>Quartz analog movement with day and date display</li>
-                <li>Premium metal strap with rose gold finish</li>
-                <li>Silver dial with elegant design</li>
-                <li>Water resistant up to 30 meters</li>
-                <li>2 years manufacturer warranty</li>
-                <li>Perfect for formal and casual wear</li>
-              </ul>
-            </div>
-
-            <div class="pdp-specifications">
-              <h3 class="pdp-specifications-title">Specifications</h3>
-              <div class="pdp-spec-row">
-                <div class="pdp-spec-label">Case Material:</div>
-                <div class="pdp-spec-value">Brass</div>
-              </div>
-              <div class="pdp-spec-row">
-                <div class="pdp-spec-label">Strap Material:</div>
-                <div class="pdp-spec-value">Metal</div>
-              </div>
-              <div class="pdp-spec-row">
-                <div class="pdp-spec-label">Dial Color:</div>
-                <div class="pdp-spec-value">Silver</div>
-              </div>
-              <div class="pdp-spec-row">
-                <div class="pdp-spec-label">Case Diameter:</div>
-                <div class="pdp-spec-value">32mm</div>
-              </div>
-              <div class="pdp-spec-row">
-                <div class="pdp-spec-label">Movement Type:</div>
-                <div class="pdp-spec-value">Quartz</div>
-              </div>
-              <div class="pdp-spec-row">
-                <div class="pdp-spec-label">Water Resistance:</div>
-                <div class="pdp-spec-value">30 meters</div>
-              </div>
+          <div class="pdp-specifications">
+            <h3 class="pdp-specifications-title">Specifications</h3>
+            ${specificationsHTML}
+            ${productData.warranty ? `
               <div class="pdp-spec-row">
                 <div class="pdp-spec-label">Warranty:</div>
-                <div class="pdp-spec-value">2 Years Manufacturer Warranty</div>
+                <div class="pdp-spec-value">${productData.warranty}</div>
               </div>
-            </div>
+            ` : ''}
+            ${productData.warranty_detail ? `
+              <div class="pdp-spec-row">
+                <div class="pdp-spec-label">Warranty Detail:</div>
+                <div class="pdp-spec-value">${productData.warranty_detail}</div>
+              </div>
+            ` : ''}
+            ${productData.country_of_origin ? `
+              <div class="pdp-spec-row">
+                <div class="pdp-spec-label">Country of Origin:</div>
+                <div class="pdp-spec-value">${productData.country_of_origin}</div>
+              </div>
+            ` : ''}
           </div>
         </div>
       </div>
-    `;
+    </div>
+  `;
+}
+
+export default async function decorate(block) {
+  // Get SKU from URL parameter
+  const sku = getUrlParameter('sku');
+  
+  console.log('PDP Block: SKU from URL:', sku);
+  
+  if (sku) {
+    // Show loading state
+    block.innerHTML = '<div class="pdp-loading">Loading product...</div>';
+    
+    // Fetch product data
+    const productData = await fetchProductData(sku);
+    
+    // Create and set PDP HTML
+    block.innerHTML = createPDPHTML(productData, sku);
+  } else {
+    // Check if block is empty (when added in UE) - fallback for editor
+    if (!block.querySelector('.pdp-container')) {
+      block.innerHTML = '<div class="pdp-error">Please provide a SKU parameter in the URL (e.g., ?sku=NTTH1782630)</div>';
+    }
   }
   
-  // Product image sets for different dial colors
-  const imageSets = {
-    silver: {
-      main: `${imgPath}/2656WM01_1.jpg`,
-      mainLarge: [
-        `${imgPath}/2656WM01_1.jpg`,
-        `${imgPath}/2656WM01_2.jpg`,
-        `${imgPath}/2656WM01_3.jpg`,
-        `${imgPath}/2656WM01_4.jpg`,
-        `${imgPath}/2656WM01_5.jpg`,
-        `${imgPath}/2656WM01_6.jpg`,
-      ],
-      thumbnails: [
-        `${imgPath}/2656WM01_1.jpg`,
-        `${imgPath}/2656WM01_2.jpg`,
-        `${imgPath}/2656WM01_3.jpg`,
-        `${imgPath}/2656WM01_4.jpg`,
-        `${imgPath}/2656WM01_5.jpg`,
-        `${imgPath}/2656WM01_6.jpg`,
-      ],
-    },
-    white: {
-      main: `${imgPath}/2656BM01_1.jpg`,
-      mainLarge: [
-        `${imgPath}/2656BM01_1.jpg`,
-        `${imgPath}/2656BM01_2.jpg`,
-        `${imgPath}/2656BM01_3.jpg`,
-        `${imgPath}/2656BM01_4.jpg`,
-        `${imgPath}/2656BM01_5.jpg`,
-        `${imgPath}/2656BM01_6.jpg`,
-      ],
-      thumbnails: [
-        `${imgPath}/2656BM01_1.jpg`,
-        `${imgPath}/2656BM01_2.jpg`,
-        `${imgPath}/2656BM01_3.jpg`,
-        `${imgPath}/2656BM01_4.jpg`,
-        `${imgPath}/2656BM01_5.jpg`,
-        `${imgPath}/2656BM01_6.jpg`,
-      ],
-    },
-    blue: {
-      main: `${imgPath}/2656YL01_1.jpg`,
-      mainLarge: [
-        `${imgPath}/2656YL01_1.jpg`,
-        `${imgPath}/2656YL01_2.jpg`,
-        `${imgPath}/2656YL01_3.jpg`,
-        `${imgPath}/2656YL01_4.jpg`,
-        `${imgPath}/2656YL01_5.jpg`,
-        `${imgPath}/2656YL01_6.jpg`,
-      ],
-      thumbnails: [
-        `${imgPath}/2656YL01_1.jpg`,
-        `${imgPath}/2656YL01_2.jpg`,
-        `${imgPath}/2656YL01_3.jpg`,
-        `${imgPath}/2656YL01_4.jpg`,
-        `${imgPath}/2656YL01_5.jpg`,
-        `${imgPath}/2656YL01_6.jpg`,
-      ],
-    },
-  };
-  
-  // Image gallery functionality
-  const imageGallery = block.querySelector('.pdp-image-gallery');
+  // Set up image gallery functionality
   const thumbnails = block.querySelectorAll('.pdp-thumbnail');
   const mainImage = block.querySelector('.pdp-main-image img');
   
-  // Store the current color variant
-  let currentVariant = 'silver';
-  
-  if (imageGallery && thumbnails.length > 0 && mainImage) {
-    thumbnails.forEach((thumb, index) => {
+  if (thumbnails.length > 0 && mainImage) {
+    thumbnails.forEach((thumb) => {
       thumb.addEventListener('click', () => {
-        // Use the high-res image for main display
-        const imageSet = imageSets[currentVariant];
-        if (imageSet && imageSet.mainLarge && imageSet.mainLarge[index]) {
-          mainImage.src = imageSet.mainLarge[index];
+        const thumbImg = thumb.querySelector('img');
+        if (thumbImg) {
+          mainImage.src = thumbImg.src;
+          
+          // Update active thumbnail
+          thumbnails.forEach((t) => t.classList.remove('active'));
+          thumb.classList.add('active');
         }
-        
-        // Update active thumbnail
-        thumbnails.forEach((t) => t.classList.remove('active'));
-        thumb.classList.add('active');
       });
     });
   }
-  
-  // Function to change product images
-  function changeProductImages(colorKey) {
-    const imageSet = imageSets[colorKey];
-    if (!imageSet) return;
-    
-    // Update current variant
-    currentVariant = colorKey;
-    
-    // Update main image with high-res version
-    if (mainImage) {
-      mainImage.src = imageSet.main;
-    }
-    
-    // Update thumbnails with small versions
-    const thumbImgs = block.querySelectorAll('.pdp-thumbnail img');
-    thumbImgs.forEach((img, index) => {
-      if (imageSet.thumbnails[index]) {
-        img.src = imageSet.thumbnails[index];
-      }
-    });
-    
-    // Reset active thumbnail to first one
-    thumbnails.forEach((t, i) => {
-      if (i === 0) {
-        t.classList.add('active');
-      } else {
-        t.classList.remove('active');
-      }
-    });
-  }
-  
-  // Dial Color options functionality
-  const dialColorOptions = block.querySelectorAll('.pdp-option-values .pdp-option-value');
-  dialColorOptions.forEach((option) => {
-    option.addEventListener('click', () => {
-      const colorText = option.textContent.trim().toLowerCase();
-      
-      // Update selected state
-      const parent = option.closest('.pdp-option');
-      if (parent) {
-        parent.querySelectorAll('.pdp-option-value').forEach((opt) => {
-          opt.classList.remove('selected');
-        });
-        option.classList.add('selected');
-      }
-      
-      // Change images based on color selection
-      changeProductImages(colorText);
-    });
-  });
   
   // Quantity selector
   const decreaseBtn = block.querySelector('.quantity-decrease');
@@ -296,8 +251,21 @@ export default async function decorate(block) {
   const addToCartBtn = block.querySelector('.pdp-add-to-cart');
   if (addToCartBtn) {
     addToCartBtn.addEventListener('click', () => {
+      const quantity = quantityInput ? quantityInput.value : 1;
+      const skuValue = getUrlParameter('sku');
       // eslint-disable-next-line no-alert
-      alert('Product added to cart!');
+      alert(`Product ${skuValue} added to cart! Quantity: ${quantity}`);
+    });
+  }
+  
+  // Buy now button
+  const buyNowBtn = block.querySelector('.pdp-buy-now');
+  if (buyNowBtn) {
+    buyNowBtn.addEventListener('click', () => {
+      const quantity = quantityInput ? quantityInput.value : 1;
+      const skuValue = getUrlParameter('sku');
+      // eslint-disable-next-line no-alert
+      alert(`Proceeding to checkout with ${skuValue}! Quantity: ${quantity}`);
     });
   }
 }

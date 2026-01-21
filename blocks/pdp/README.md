@@ -1,105 +1,142 @@
-# PDP (Product Detail Page) Block
+# Product Detail Page (PDP) Block
 
-A static, non-authorable block for displaying product details in an e-commerce layout.
+This block displays product details dynamically by fetching data from the Titan Services API based on a SKU parameter in the URL.
 
 ## Features
 
-- **Product Image Gallery**: Main image with thumbnail navigation (6 product images included)
-- **Product Information**: Brand, title, SKU, ratings
-- **Pricing**: Current price, original price, and discount display
-- **Product Options**: Dial color, strap color, or other variant selectors
-- **Quantity Selector**: Increase/decrease quantity controls
-- **Action Buttons**: Add to Cart and Buy Now buttons
-- **Product Features**: Bulleted list of key features
-- **Specifications**: Detailed product specifications table
-- **Fully Responsive**: Mobile-friendly layout
-
-## Included Images
-
-The block includes multiple product images in the `imgs` folder for the Titan Lagan watch series:
-
-**Main Product (2656WM01 - Women's Watch):**
-- `2656WM01_1.jpg` - Main product image
-- `2656WM01_2 (1).jpg` - Alternate view
-- `2656WM01_3 (1).jpg` - Side view
-- `2656WM01_4 (1).jpg` - Detail shot
-- `2656WM01_5 (1).jpg` - Wrist view
-- `2656WM01_6 (1).jpg` - Additional angle
-- `2656WM01_7 (1).jpg` - Extra view
-
-**Additional Variants Available:**
-- 2656BM01 series (6 images)
-- 2656YL01 series (6 images)
-
-You can easily switch between product variants by updating the image src attributes in the HTML.
+- **Dynamic Data Fetching**: Automatically fetches product information from the API based on SKU parameter
+- **Image Gallery**: Displays up to 4 product images with thumbnail navigation
+- **Product Details**: Shows name, brand, price, discount, availability, and description
+- **Specifications**: Displays comprehensive product specifications
+- **Interactive Elements**: Quantity selector, Add to Cart, and Buy Now buttons
+- **Responsive Design**: Optimized for all screen sizes
 
 ## Usage
 
-### In Franklin/AEM Authoring
+### URL Parameter
 
-1. Add a section to your page
-2. Insert a block and name it `pdp`
-3. The block will render with the static HTML structure defined in your content
+Add the `sku` parameter to the URL to load a specific product:
 
-### HTML Structure
-
-The block expects the following structure (see `pdp-sample.html` for a complete example):
-
-```html
-<div class="pdp">
-  <div class="pdp-container">
-    <div class="product-wrapper">
-      <div class="pdp-images">
-        <!-- Image gallery -->
-      </div>
-      <div class="product-detail">
-        <!-- Product details -->
-      </div>
-    </div>
-  </div>
-</div>
 ```
+https://yoursite.com/pdp?sku=NTTH1782630
+```
+
+### API Configuration
+
+The block fetches product data from:
+- **API Endpoint**: `https://author-p121857-e1377564.adobeaemcloud.com/content/titan-services/products`
+- **Authentication**: Basic Auth with credentials `internaluser:internaluser`
+
+### Data Structure
+
+The API should return a JSON response with the following structure:
+
+```json
+{
+  "data": [
+    {
+      "product_id": "NTTH1782630",
+      "sku": "NTTH1782630",
+      "name": "Tommy Hilfiger Quartz Analog Grey dial Stainless Steel Strap Watch for Women",
+      "description": "Product description...",
+      "brand": "Tommy",
+      "category": "Watches/Sale",
+      "gender": "Women",
+      "price": "13200",
+      "currency": "INR",
+      "sale_price": "10560",
+      "availability_status": "In Stock",
+      "image_url": "url1,url2,url3,url4",
+      "main_image": "main-image-url",
+      "warranty": "24 Months",
+      "warranty_detail": "Warranty details...",
+      "glass_material": "Mineral Glass",
+      "strap_material": "Stainless Steel",
+      "strap_color": "Grey",
+      "function": "Analog",
+      "lock_mechanism": "Push Button Clasp",
+      "movement": "Quartz",
+      "dial_color": "Grey",
+      "case_shape": "Round",
+      "case_material": "Stainless Steel",
+      "case_length": "34 mm",
+      "case_width": "34 mm",
+      "case_thickness": "8.1 mm",
+      "country_of_origin": "India",
+      "tag": "Women's Watch"
+    }
+  ]
+}
+```
+
+## Image Handling
+
+- **Thumbnail Images**: Up to 4 images displayed on the left side from `image_url` field (comma-separated)
+- **Main Image**: Primary display uses `main_image` field, falls back to first image in `image_url`
+- **Interactive Gallery**: Click thumbnails to change the main image
+
+## Specifications Displayed
+
+The block automatically displays the following specifications (if available):
+- Brand
+- Gender
+- Glass Material
+- Strap Material
+- Strap Color
+- Function
+- Lock Mechanism
+- Movement
+- Dial Color
+- Case Shape
+- Case Material
+- Case Length
+- Case Width
+- Case Thickness
+- Warranty
+- Warranty Detail
+- Country of Origin
 
 ## Interactive Features
 
-The JavaScript adds the following interactive functionality:
+### Image Gallery
+- Click on any thumbnail to view it in the main image area
+- Active thumbnail is highlighted with a border
 
-1. **Image Gallery**: Click thumbnails to change the main product image
-2. **Quantity Controls**: Increase/decrease product quantity
-3. **Add to Cart**: Button click handler (shows alert by default)
+### Quantity Selector
+- Increase/decrease quantity using + and - buttons
+- Minimum quantity is 1
+
+### Action Buttons
+- **Add to Cart**: Adds the product with selected quantity to cart
+- **Buy Now**: Proceeds to checkout with the selected product
+
+## Error States
+
+- **No SKU**: Shows message to provide SKU parameter
+- **Product Not Found**: Shows error message if SKU is not found in API
+- **Loading State**: Shows loading message while fetching data
+
+## Testing
+
+Use the provided `pdp-test.html` file to test the PDP block:
+
+```
+http://localhost:3000/pdp-test.html?sku=NTTH1782630
+```
 
 ## Customization
 
 ### Styling
+Modify `pdp.css` to customize the appearance of the product detail page.
 
-Edit `pdp.css` to customize:
-- Colors (uses CSS variables like `--main-accent-color`)
-- Spacing and layout
-- Button styles
-- Responsive breakpoints
+### API Endpoint
+Update the `apiUrl` in `pdp.js` to point to a different API endpoint if needed.
 
-### Functionality
+### Authentication
+Change the credentials in the `fetchProductData` function if different authentication is required.
 
-Edit `pdp.js` to customize:
-- Add to cart behavior
-- Product options selection
-- API integrations
-- Analytics tracking
-
-## CSS Variables Used
-
-- `--main-accent-color`: Primary brand color for buttons and accents
-- `--link-hover-color`: Hover state color
-- `--text-color`: Main text color
-- `--background-color`: Background color
-
-## Browser Support
+## Browser Compatibility
 
 - Modern browsers (Chrome, Firefox, Safari, Edge)
-- Mobile responsive
-- ES6+ JavaScript
-
-## Notes
-
-This is a **static block** and is not designed to be authorable through the Universal Editor. If you need an authorable product block, consider creating a separate component with proper models and definitions.
-
+- ES6+ JavaScript support required
+- Fetch API support required
