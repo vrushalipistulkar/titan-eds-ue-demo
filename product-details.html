@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Details - Titan</title>
+  <meta name="description" content="View product details">
+  <link rel="stylesheet" href="/styles/styles.css">
+  <link rel="stylesheet" href="/blocks/pdp/pdp.css">
+</head>
+<body>
+  <header>
+    <!-- Header can be added here -->
+  </header>
+  
+  <main>
+    <div class="section">
+      <div class="pdp"></div>
+    </div>
+  </main>
+  
+  <footer>
+    <!-- Footer can be added here -->
+  </footer>
+  
+  <script type="module">
+    import decorate from '/blocks/pdp/pdp.js';
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      const pdpBlock = document.querySelector('.pdp');
+      if (pdpBlock) {
+        decorate(pdpBlock);
+      }
+    });
+  </script>
+</body>
+</html>
+

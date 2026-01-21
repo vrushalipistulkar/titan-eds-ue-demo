@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Products List - Titan</title>
+  <link rel="stylesheet" href="/styles/styles.css">
+  <link rel="stylesheet" href="/blocks/products-list/products-list.css">
+  <script type="module">
+    console.log('Script loading...');
+    import decorate from '/blocks/products-list/products-list.js';
+    console.log('Decorate function imported:', typeof decorate);
+    
+    // Wait for DOM to be ready
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('DOM loaded, searching for .products-list block...');
+      const productsListBlock = document.querySelector('.products-list');
+      console.log('Block found:', productsListBlock);
+      if (productsListBlock) {
+        console.log('Calling decorate function...');
+        decorate(productsListBlock).then(() => {
+          console.log('Decorate completed successfully');
+          console.log('Block HTML after decorate:', productsListBlock.innerHTML.substring(0, 500));
+          console.log('Block children count:', productsListBlock.children.length);
+          console.log('Block display:', window.getComputedStyle(productsListBlock).display);
+          console.log('Block visibility:', window.getComputedStyle(productsListBlock).visibility);
+          console.log('Block opacity:', window.getComputedStyle(productsListBlock).opacity);
+          console.log('Block offsetHeight:', productsListBlock.offsetHeight);
+          console.log('Block offsetWidth:', productsListBlock.offsetWidth);
+        }).catch((error) => {
+          console.error('Error in decorate:', error);
+        });
+      } else {
+        console.error('Products list block not found!');
+      }
+    });
+  </script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+    }
+    
+    .test-header {
+      background-color: #fff;
+      padding: 20px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      margin-bottom: 0;
+    }
+    
+    .test-header h1 {
+      margin: 0;
+      font-size: 24px;
+      color: #333;
+    }
+    
+    .test-header p {
+      margin: 8px 0 0;
+      color: #666;
+      font-size: 14px;
+    }
+    
+    /* Debug: Force visibility */
+    .products-list,
+    .products-list * {
+      visibility: visible !important;
+      opacity: 1 !important;
+      display: block !important;
+    }
+    
+    .products-list-grid {
+      display: grid !important;
+    }
+    
+    .product-card {
+      border: 2px solid red !important;
+      background: yellow !important;
+      min-height: 100px !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="test-header">
+    <h1>Titan Products Catalog</h1>
+    <p>Click on any product to view its details</p>
+  </div>
+  
+  <div class="products-list" style="min-height: 200px; background-color: #fff; padding: 20px;"></div>
+</body>
+</html>
