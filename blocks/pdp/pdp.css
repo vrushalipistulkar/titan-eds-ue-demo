@@ -414,13 +414,13 @@
 .pdp-spec-label {
   flex: 0 0 150px;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 16px;
   color: #666;
 }
 
 .pdp-spec-value {
   flex: 1;
-  font-size: 14px;
+  font-size: 16px;
   color: #333;
 }
 
