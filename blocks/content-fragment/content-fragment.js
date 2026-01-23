@@ -139,9 +139,11 @@ export default async function decorate(block) {
           // Default layout: image as background with gradient overlay (original behavior)
           bannerDetailStyle = 'background-image: linear-gradient(90deg,rgba(0,0,0,0.6), rgba(0,0,0,0.1) 80%) ,url('+imgUrl+');';
         }
-       let ctaUrl = '#';
-        if(cfReq?.ctaUrl && cfReq?.ctaUrl !== '#'){
-            ctaUrl = '/content/titan/language-masters/en/product-details.html?sku=' + cfReq?.ctaUrl;
+        let ctaUrl = '#';
+        // Extract SKU ID from cfReq._path, which looks like "/content/dam/titan/en/fragments/products/NTTH1782630"
+        const skuId = cfReq._path ? cfReq._path.split('/').pop() : '';
+        if(skuId){
+            ctaUrl = '/content/titan/language-masters/en/product-details.html?sku=' + skuId;
         }
         block.innerHTML = `<div class='banner-content block ${displayStyle}' data-aue-resource=${itemId} data-aue-label="Offer Content fragment" data-aue-type="reference" data-aue-filter="contentfragment" style="${bannerContentStyle}">
           <div class='banner-detail ${alignment}' style="${bannerDetailStyle}" data-aue-prop="bannerimage" data-aue-label="Main Image" data-aue-type="media" >
