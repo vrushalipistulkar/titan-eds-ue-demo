@@ -1,7 +1,7 @@
 // Function to fetch all products from API
 async function fetchAllProducts() {
   try {
-    const apiUrl = 'https://author-p121857-e1908603.adobeaemcloud.com/content/titan-services/products';
+    const apiUrl = 'https://author-p121857-e1377564.adobeaemcloud.com/content/titan-services/products';
     const credentials = btoa('internaluser:internaluser'); // Base64 encode credentials
     
     console.log('Fetching products from API:', apiUrl);

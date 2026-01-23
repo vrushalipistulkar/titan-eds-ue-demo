@@ -7,7 +7,7 @@ function getUrlParameter(name) {
 // Function to fetch product data from API
 async function fetchProductData(sku) {
   try {
-    const apiUrl = 'https://author-p121857-e1908603.adobeaemcloud.com/content/titan-services/products';
+    const apiUrl = 'https://author-p121857-e1377564.adobeaemcloud.com/content/titan-services/products';
     const credentials = btoa('internaluser:internaluser'); // Base64 encode credentials
     
     console.log('Fetching from API:', apiUrl);
