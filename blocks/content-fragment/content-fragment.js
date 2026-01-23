@@ -139,7 +139,10 @@ export default async function decorate(block) {
           // Default layout: image as background with gradient overlay (original behavior)
           bannerDetailStyle = 'background-image: linear-gradient(90deg,rgba(0,0,0,0.6), rgba(0,0,0,0.1) 80%) ,url('+imgUrl+');';
         }
-
+       let ctaUrl = '#';
+        if(cfReq?.ctaUrl && cfReq?.ctaUrl !== '#'){
+            ctaUrl = '/content/titan/language-masters/en/product-details.html?sku=' + cfReq?.ctaUrl;
+        }
         block.innerHTML = `<div class='banner-content block ${displayStyle}' data-aue-resource=${itemId} data-aue-label="Offer Content fragment" data-aue-type="reference" data-aue-filter="contentfragment" style="${bannerContentStyle}">
           <div class='banner-detail ${alignment}' style="${bannerDetailStyle}" data-aue-prop="bannerimage" data-aue-label="Main Image" data-aue-type="media" >
                 <p data-aue-prop="title" data-aue-label="Title" data-aue-type="text" class='cftitle'>${cfReq?.title}</p>
@@ -147,7 +150,7 @@ export default async function decorate(block) {
                 
                 <div data-aue-prop="description" data-aue-label="Description" data-aue-type="richtext" class='cfdescription'><p>${cfReq?.description?.plaintext || ''}</p></div>
                  <p class="button-container ${ctaStyle}">
-                  <a href="${cfReq?.ctaUrl ? '/content/titan/language-masters/en/product-details.html?sku=' + cfReq.ctaUrl : '#'}" data-aue-prop="ctaUrl" data-aue-label="Button Link/URL" data-aue-type="reference"  target="_blank" rel="noopener" data-aue-filter="page" class='button'>
+                  <a href="${ctaUrl}" data-aue-prop="ctaUrl" data-aue-label="Button Link/URL" data-aue-type="reference"  target="_blank" rel="noopener" data-aue-filter="page" class='button'>
                     <span data-aue-prop="ctalabel" data-aue-label="Button Label" data-aue-type="text">
                       ${cfReq?.ctalabel} 
                     </span>
