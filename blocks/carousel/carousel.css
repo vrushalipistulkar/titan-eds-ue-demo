@@ -536,7 +536,7 @@
 
 .carousel-container .carousel-wrapper .carousel.single-slide-carousel-wrapper,
 .carousel-container .carousel-wrapper .carousel > ul.single-slide-carousel {
-  min-height: min(40rem, calc(100svh - var(--nav-height)));
+  min-height: min(45rem, calc(112svh - var(--nav-height)));
 }
 
 .carousel.single-slide-carousel-wrapper {
