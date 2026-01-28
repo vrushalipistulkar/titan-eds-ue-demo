@@ -236,9 +236,14 @@ export default function decorate(block) {
       slider.append(li);
       row.remove();
     } else {
-      moveInstrumentation(row, leftContent);
-      while (row.firstElementChild) leftContent.append(row.firstElementChild);
-      leftContent.className = 'default-content-wrapper';
+      // Skip rows that contain images - they should not be in leftContent
+      // This prevents images from appearing outside/above the carousel
+      const hasImage = row.querySelector('img') || row.querySelector('picture');
+      if (!hasImage) {
+        moveInstrumentation(row, leftContent);
+        while (row.firstElementChild) leftContent.append(row.firstElementChild);
+        leftContent.className = 'default-content-wrapper';
+      }
       row.remove();
     }
   });
@@ -251,6 +256,15 @@ export default function decorate(block) {
     ]);
     moveInstrumentation(img, optimizedPic.querySelector('img'));
     img.closest('picture').replaceWith(optimizedPic);
+  });
+
+  // Accessibility: preserve visual style but expose proper heading level to AT
+  // Use aria-level so we don't change font sizes. Default to level 3, or infer from data-heading-level on the block.
+  const base = parseInt(block?.dataset?.headingLevel, 10);
+  const ariaLevel = Number.isFinite(base) ? Math.min(Math.max(base, 1) + 1, 6) : 3;
+  slider.querySelectorAll('h4,h5,h6').forEach((node) => {
+    node.setAttribute('role', 'heading');
+    node.setAttribute('aria-level', String(ariaLevel));
   });
 
   if (slider.classList.contains('single-slide-carousel')) {
