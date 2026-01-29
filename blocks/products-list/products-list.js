@@ -59,22 +59,38 @@ function formatPrice(price, currency = 'INR') {
   return `${currency} ${numPrice.toLocaleString()}`;
 }
 
+// Function to get the correct product details URL based on environment
+function getProductDetailsUrl(sku) {
+  const { hostname } = window.location;
+  
+  // Check if we're on author/publish (adobeaemcloud.com)
+  if (hostname.includes('adobeaemcloud.com')) {
+    // Author/Publish: Use full content path
+    return `/content/titan/language-masters/en/product-details.html?sku=${sku}`;
+  }
+  
+  // Local and Live (localhost or aem.live): Use simplified URL structure
+  return `/en/product-details?sku=${sku}`;
+}
+
 // Function to create product card HTML
 function createProductCard(product) {
   const mainImage = product.main_image || product.thumbnail_url || '';
+  // Add WebP optimization for AEM images
+  const optimizedImage = mainImage ? `${mainImage}/_jcr_content/renditions/weboptimized.webp` : '';
   const salePrice = formatPrice(product.sale_price, product.currency);
   const originalPrice = product.price && product.price !== product.sale_price 
     ? formatPrice(product.price, product.currency) 
     : '';
   const discount = calculateDiscount(parseFloat(product.price), parseFloat(product.sale_price));
   
-  // Product details URL
-  const productUrl = `/content/titan/language-masters/en/product-details.html?sku=${product.sku}`;
+  // Product details URL - environment aware
+  const productUrl = getProductDetailsUrl(product.sku);
   
   return `
     <div class="product-card" data-sku="${product.sku}" data-url="${productUrl}">
       <div class="product-card-image">
-        <img src="${mainImage}" alt="${product.name || ''}" loading="lazy" width="300" height="300">
+        <img src="${optimizedImage}" alt="${product.name || ''}" loading="lazy" width="300" height="300">
         ${discount > 0 ? `<div class="product-card-badge">${discount}% off</div>` : ''}
       </div>
       <div class="product-card-content">
