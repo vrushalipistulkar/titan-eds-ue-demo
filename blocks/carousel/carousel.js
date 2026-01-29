@@ -248,13 +248,21 @@ export default function decorate(block) {
     }
   });
 
-  slider.querySelectorAll('picture > img').forEach((img) => {
+  slider.querySelectorAll('picture > img').forEach((img, index) => {
     const optimizedPic = createOptimizedPicture(img.src, img.alt, false, [
       { media: '(min-width: 1024px)', width: '2000' },
       { media: '(min-width: 768px)', width: '1400' },
       { width: '1000' }
     ]);
-    moveInstrumentation(img, optimizedPic.querySelector('img'));
+    
+    // Optimize LCP: First image should be eagerly loaded with high priority
+    const optimizedImg = optimizedPic.querySelector('img');
+    if (index === 0) {
+      optimizedImg.setAttribute('loading', 'eager');
+      optimizedImg.setAttribute('fetchpriority', 'high');
+    }
+    
+    moveInstrumentation(img, optimizedImg);
     img.closest('picture').replaceWith(optimizedPic);
   });
 

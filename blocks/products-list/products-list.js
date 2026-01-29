@@ -74,7 +74,7 @@ function createProductCard(product) {
   return `
     <div class="product-card" data-sku="${product.sku}" data-url="${productUrl}">
       <div class="product-card-image">
-        <img src="${mainImage}" alt="${product.name || ''}" loading="lazy">
+        <img src="${mainImage}" alt="${product.name || ''}" loading="lazy" width="300" height="300">
         ${discount > 0 ? `<div class="product-card-badge">${discount}% off</div>` : ''}
       </div>
       <div class="product-card-content">

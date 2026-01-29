@@ -1,8 +1,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
+<!-- Preload critical resources -->
+<link rel="preload" href="/scripts/aem.js" as="script">
+<link rel="preload" href="/scripts/scripts.js" as="script">
+<link rel="preload" href="/styles/styles.css" as="style">
 <script src="/scripts/aem.js" type="module"></script>
 <script src="/scripts/scripts.js" type="module"></script>
 <link rel="stylesheet" href="/styles/styles.css"/>
-<script language="JavaScript" type="text/javascript" src="https://publish-p121857-e1908603.adobeaemcloud.com/content/dam/titan/en/at.js"></script>
+<!-- Adobe Target - Load async to prevent render blocking -->
+<script language="JavaScript" type="text/javascript" src="https://publish-p121857-e1908603.adobeaemcloud.com/content/dam/titan/en/at.js" async></script>
 <!-- Add your custom scripts here -->
 
 <!-- DO NOT DELETE THE BELOW SCRIPTS -->

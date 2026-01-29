@@ -78,7 +78,7 @@ function createPDPHTML(productData, sku) {
   // Create thumbnail HTML
   const thumbnailsHTML = imageUrls.map((url, index) => `
     <div class="pdp-thumbnail ${index === 0 ? 'active' : ''}">
-      <img src="${url.trim()}" alt="Product Image ${index + 1}">
+      <img src="${url.trim()}" alt="Product Image ${index + 1}" width="100" height="100" loading="lazy">
     </div>
   `).join('');
   
@@ -118,7 +118,7 @@ function createPDPHTML(productData, sku) {
             ${thumbnailsHTML}
           </div>
           <div class="pdp-main-image">
-            <img src="${mainImage}" alt="${productData.name}">
+            <img src="${mainImage}" alt="${productData.name}" width="600" height="600" loading="eager" fetchpriority="high">
           </div>
         </div>
         <div class="product-detail">
