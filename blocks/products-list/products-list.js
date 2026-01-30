@@ -148,14 +148,23 @@ export default async function decorate(block) {
   // Filter products by category tag if specified
   if (categoryTag) {
     console.log(`Filtering products by category tag: "${categoryTag}"`);
+    
+    // Normalize function: lowercase and remove apostrophes
+    const normalize = (str) => str.toLowerCase().replace(/'/g, '');
+    const normalizedCategoryTag = normalize(categoryTag);
+    
     products = products.filter(product => {
       // Check if product has a tag that matches the selected category
       const productTag = product.tag || '';
       const productCategory = product.category || '';
       
-      // Match against tag or category field
-      const matches = productTag.toLowerCase().includes(categoryTag.toLowerCase()) ||
-                     productCategory.toLowerCase().includes(categoryTag.toLowerCase());
+      // Normalize product fields
+      const normalizedProductTag = normalize(productTag);
+      const normalizedProductCategory = normalize(productCategory);
+      
+      // Match against tag or category field (case-insensitive, apostrophe-insensitive)
+      const matches = normalizedProductTag.includes(normalizedCategoryTag) ||
+                     normalizedProductCategory.includes(normalizedCategoryTag);
       
       console.log(`Product ${product.sku}: tag="${productTag}", category="${productCategory}", matches=${matches}`);
       return matches;
