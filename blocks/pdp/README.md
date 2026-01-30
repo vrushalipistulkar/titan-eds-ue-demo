@@ -13,7 +13,9 @@ This block displays product details dynamically by fetching data from the Titan 
 
 ## Usage
 
-### URL Parameter
+The PDP block supports two methods for specifying the product SKU:
+
+### 1. URL Parameter (Recommended for Dynamic Pages)
 
 Add the `sku` parameter to the URL to load a specific product:
 
@@ -21,10 +23,23 @@ Add the `sku` parameter to the URL to load a specific product:
 https://yoursite.com/pdp?sku=NTTH1782630
 ```
 
+### 2. Authored in Universal Editor (Recommended for Static Product Pages)
+
+When adding a PDP block in the AEM Universal Editor:
+
+1. Add a new "PDP (Product Detail Page)" block to your page
+2. In the block properties panel, enter the SKU in the "Product SKU" field (e.g., `NTTH1782630`)
+3. The product will load automatically using this SKU
+4. **Note**: URL parameter takes precedence over authored SKU if both are present
+
+**Use Cases:**
+- **URL Parameter**: Best for dynamic product listing pages where users click on products
+- **Authored SKU**: Best for dedicated product pages or featured product showcases
+
 ### API Configuration
 
 The block fetches product data from:
-- **API Endpoint**: `https://author-p121857-e1377564.adobeaemcloud.com/content/titan-services/products`
+- **API Endpoint**: `https://author-p121857-e1908603.adobeaemcloud.com/content/titan-services/products`
 - **Authentication**: Basic Auth with credentials `internaluser:internaluser`
 
 ### Data Structure
@@ -112,9 +127,17 @@ The block automatically displays the following specifications (if available):
 
 ## Error States
 
-- **No SKU**: Shows message to provide SKU parameter
+- **No SKU**: Shows message to provide SKU parameter in URL or author it in Universal Editor
 - **Product Not Found**: Shows error message if SKU is not found in API
 - **Loading State**: Shows loading message while fetching data
+
+## SKU Priority
+
+The block follows this priority order for determining which SKU to use:
+
+1. **URL Parameter** (highest priority) - `?sku=NTTH1782630`
+2. **Authored in UE** (fallback) - SKU entered in the Universal Editor field
+3. **Error State** - If neither is available, an error message is displayed
 
 ## Testing
 

@@ -188,10 +188,23 @@ function createPDPHTML(productData, sku) {
 }
 
 export default async function decorate(block) {
-  // Get SKU from URL parameter
-  const sku = getUrlParameter('sku');
+  // Get SKU from URL parameter first
+  let sku = getUrlParameter('sku');
   
-  console.log('PDP Block: SKU from URL:', sku);
+  // If no SKU in URL, try to get it from authored content in UE
+  if (!sku) {
+    // Check for authored SKU in block content
+    const skuDiv = block.querySelector('div');
+    if (skuDiv) {
+      const authoredSku = skuDiv.textContent.trim();
+      if (authoredSku) {
+        sku = authoredSku;
+        console.log('PDP Block: Using authored SKU from UE:', sku);
+      }
+    }
+  } else {
+    console.log('PDP Block: SKU from URL:', sku);
+  }
   
   if (sku) {
     // Show loading state
@@ -203,10 +216,8 @@ export default async function decorate(block) {
     // Create and set PDP HTML
     block.innerHTML = createPDPHTML(productData, sku);
   } else {
-    // Check if block is empty (when added in UE) - fallback for editor
-    if (!block.querySelector('.pdp-container')) {
-      block.innerHTML = '<div class="pdp-error">Please provide a SKU parameter in the URL (e.g., ?sku=NTTH1782630)</div>';
-    }
+    // No SKU from either URL or authored content
+    block.innerHTML = '<div class="pdp-error">Please provide a SKU parameter in the URL (e.g., ?sku=NTTH1782630) or author a SKU in the Universal Editor.</div>';
   }
   
   // Set up image gallery functionality
