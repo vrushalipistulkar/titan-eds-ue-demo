@@ -6733,5 +6733,17 @@
         "valueType": "boolean"
       }
     ]
+  },
+  {
+    "id": "products-list",
+    "fields": [
+      {
+        "component": "aem-tag",
+        "label": "Category Tag",
+        "name": "cq:tags",
+        "valueType": "string",
+        "description": "Select a category tag to filter products (e.g., Women's Watch)"
+      }
+    ]
   }
 ]

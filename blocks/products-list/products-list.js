@@ -133,17 +133,41 @@ function createProductCard(product) {
 
 // Main decorate function
 export default async function decorate(block) {
+  // Get category tag from authored content (first div)
+  const categoryTagDiv = block.querySelector(':scope > div > div');
+  const categoryTag = categoryTagDiv ? categoryTagDiv.textContent.trim() : '';
+  
+  console.log('Products List: Category Tag filter:', categoryTag);
+  
   // Show loading state
   block.innerHTML = '<div class="products-list-loading">Loading products...</div>';
   
   // Fetch all products
-  const products = await fetchAllProducts();
+  let products = await fetchAllProducts();
+  
+  // Filter products by category tag if specified
+  if (categoryTag) {
+    console.log(`Filtering products by category tag: "${categoryTag}"`);
+    products = products.filter(product => {
+      // Check if product has a tag that matches the selected category
+      const productTag = product.tag || '';
+      const productCategory = product.category || '';
+      
+      // Match against tag or category field
+      const matches = productTag.toLowerCase().includes(categoryTag.toLowerCase()) ||
+                     productCategory.toLowerCase().includes(categoryTag.toLowerCase());
+      
+      console.log(`Product ${product.sku}: tag="${productTag}", category="${productCategory}", matches=${matches}`);
+      return matches;
+    });
+    console.log(`Filtered to ${products.length} products`);
+  }
   
   if (products.length === 0) {
     block.innerHTML = `
       <div class="products-list-error">
         <h2>No products found</h2>
-        <p>Unable to load products. Please try again later.</p>
+        <p>${categoryTag ? `No products found for category "${categoryTag}".` : 'Unable to load products. Please try again later.'}</p>
       </div>
     `;
     return;
@@ -160,7 +184,7 @@ export default async function decorate(block) {
   block.innerHTML = `
     <div class="products-list-container">
       <div class="products-list-header">
-        <h2 class="products-list-title">Our Products</h2>
+        <h2 class="products-list-title">${categoryTag ? categoryTag : 'Our Products'}</h2>
        <!-- <p class="products-list-count">${products.length} products available</p> -->
       </div>
       <div class="products-list-grid">
