@@ -193,8 +193,8 @@ export default async function decorate(block) {
   
   // If no SKU in URL, try to get it from authored content in UE
   if (!sku) {
-    // Check for authored SKU in block content
-    const skuDiv = block.querySelector('div');
+    // Check for authored SKU in block content (first div > div structure)
+    const skuDiv = block.querySelector(':scope > div > div');
     if (skuDiv) {
       const authoredSku = skuDiv.textContent.trim();
       if (authoredSku) {
