@@ -48,6 +48,29 @@ function calculateDiscount(price, salePrice) {
   return Math.round(discount);
 }
 
+// Function to check if we're in author environment
+function isAuthorEnvironment() {
+  const { hostname } = window.location;
+  return hostname.includes('author-') && hostname.includes('adobeaemcloud.com');
+}
+
+// Function to convert publish URL to author URL
+function getImageUrl(imageUrl) {
+  if (!imageUrl) return '';
+  
+  // Check if we're in author environment
+  if (isAuthorEnvironment()) {
+    // Replace publish domain with author domain
+    return imageUrl.replace(
+      'publish-p121857-e1908603.adobeaemcloud.com',
+      'author-p121857-e1908603.adobeaemcloud.com'
+    );
+  }
+  
+  // Return original URL for non-author environments
+  return imageUrl;
+}
+
 // Function to format price
 function formatPrice(price, currency = 'INR') {
   const numPrice = parseFloat(price);
@@ -76,8 +99,12 @@ function getProductDetailsUrl(sku) {
 // Function to create product card HTML
 function createProductCard(product) {
   const mainImage = product.main_image || product.thumbnail_url || '';
+  
+  // Convert image URL to author if in author environment
+  const convertedMainImage = getImageUrl(mainImage);
+  
   // Add WebP optimization for AEM images
-  const optimizedImage = mainImage ? `${mainImage}/_jcr_content/renditions/weboptimized.webp` : '';
+  const optimizedImage = convertedMainImage ? `${convertedMainImage}/_jcr_content/renditions/weboptimized.webp` : '';
   const salePrice = formatPrice(product.sale_price, product.currency);
   const originalPrice = product.price && product.price !== product.sale_price 
     ? formatPrice(product.price, product.currency) 
