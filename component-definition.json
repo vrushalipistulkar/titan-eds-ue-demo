@@ -745,7 +745,8 @@
                   "name": "PDP",
                   "model": "pdp",
                   "sku": "",
-                  "hideSku": "false"
+                  "hideSku": "false",
+                  "hideFeatures": "false"
                 }
               }
             }

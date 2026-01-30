@@ -159,6 +159,37 @@ function createPDPHTML(productData, sku) {
             <button class="pdp-buy-now">Buy Now</button>
           </div>
 
+          <div class="pdp-features">
+            <div class="pdp-feature-item">
+              <img src="/blocks/pdp/icons/usp-shipping-d.svg" alt="Free Shipping" class="pdp-feature-icon">
+              <div class="pdp-feature-text">
+                <div class="pdp-feature-title">Free Shipping</div>
+                <div class="pdp-feature-subtitle">Countrywide</div>
+              </div>
+            </div>
+            <div class="pdp-feature-item">
+              <img src="/blocks/pdp/icons/usp-return-d.svg" alt="Easy Return" class="pdp-feature-icon">
+              <div class="pdp-feature-text">
+                <div class="pdp-feature-title">Easy</div>
+                <div class="pdp-feature-subtitle">Return</div>
+              </div>
+            </div>
+            <div class="pdp-feature-item">
+              <img src="/blocks/pdp/icons/usp-pod-d.svg" alt="Pay on Delivery" class="pdp-feature-icon">
+              <div class="pdp-feature-text">
+                <div class="pdp-feature-title">Pay on Delivery</div>
+                <div class="pdp-feature-subtitle">Available</div>
+              </div>
+            </div>
+            <div class="pdp-feature-item">
+              <img src="/blocks/pdp/icons/usp-service-d.svg" alt="Serviced" class="pdp-feature-icon">
+              <div class="pdp-feature-text">
+                <div class="pdp-feature-title">Serviced</div>
+                <div class="pdp-feature-subtitle">Across India</div>
+              </div>
+            </div>
+          </div>
+
           <div class="pdp-specifications">
             <h3 class="pdp-specifications-title">Specifications</h3>
             ${specificationsHTML}
@@ -195,6 +226,10 @@ export default async function decorate(block) {
   const hideSkuDiv = block.querySelector(':scope > div:nth-child(2) > div');
   const hideSku = hideSkuDiv ? hideSkuDiv.textContent.trim().toLowerCase() === 'true' : false;
   
+  // Get hideFeatures setting from authored content (third div)
+  const hideFeaturesDiv = block.querySelector(':scope > div:nth-child(3) > div');
+  const hideFeatures = hideFeaturesDiv ? hideFeaturesDiv.textContent.trim().toLowerCase() === 'true' : false;
+  
   // If no SKU in URL, try to get it from authored content in UE
   if (!sku) {
     // Check for authored SKU in block content (first div > div structure)
@@ -211,6 +246,7 @@ export default async function decorate(block) {
   }
   
   console.log('PDP Block: Hide SKU setting:', hideSku);
+  console.log('PDP Block: Hide Features setting:', hideFeatures);
   
   if (sku) {
     // Show loading state
@@ -227,6 +263,14 @@ export default async function decorate(block) {
       const skuElement = block.querySelector('.pdp-sku');
       if (skuElement) {
         skuElement.style.display = 'none';
+      }
+    }
+    
+    // Hide features panel if hideFeatures is enabled
+    if (hideFeatures) {
+      const featuresElement = block.querySelector('.pdp-features');
+      if (featuresElement) {
+        featuresElement.style.display = 'none';
       }
     }
   } else {

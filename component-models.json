@@ -6723,6 +6723,14 @@
         "name": "hideSku",
         "value": "false",
         "valueType": "boolean"
+      },
+      {
+        "component": "boolean",
+        "label": "Hide Features Panel",
+        "description": "Enable to hide the features section (Free Shipping, Easy Return, etc.)",
+        "name": "hideFeatures",
+        "value": "false",
+        "valueType": "boolean"
       }
     ]
   }
