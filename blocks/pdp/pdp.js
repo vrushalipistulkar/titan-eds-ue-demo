@@ -191,6 +191,10 @@ export default async function decorate(block) {
   // Get SKU from URL parameter first
   let sku = getUrlParameter('sku');
   
+  // Get hideSku setting from authored content (second div)
+  const hideSkuDiv = block.querySelector(':scope > div:nth-child(2) > div');
+  const hideSku = hideSkuDiv ? hideSkuDiv.textContent.trim().toLowerCase() === 'true' : false;
+  
   // If no SKU in URL, try to get it from authored content in UE
   if (!sku) {
     // Check for authored SKU in block content (first div > div structure)
@@ -206,6 +210,8 @@ export default async function decorate(block) {
     console.log('PDP Block: SKU from URL:', sku);
   }
   
+  console.log('PDP Block: Hide SKU setting:', hideSku);
+  
   if (sku) {
     // Show loading state
     block.innerHTML = '<div class="pdp-loading">Loading product...</div>';
@@ -215,6 +221,14 @@ export default async function decorate(block) {
     
     // Create and set PDP HTML
     block.innerHTML = createPDPHTML(productData, sku);
+    
+    // Hide SKU display if hideSku is enabled
+    if (hideSku) {
+      const skuElement = block.querySelector('.pdp-sku');
+      if (skuElement) {
+        skuElement.style.display = 'none';
+      }
+    }
   } else {
     // No SKU from either URL or authored content
     block.innerHTML = '<div class="pdp-error">Please provide a SKU parameter in the URL (e.g., ?sku=NTTH1782630) or author a SKU in the Universal Editor.</div>';

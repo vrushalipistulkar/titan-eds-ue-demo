@@ -744,7 +744,8 @@
                 "template": {
                   "name": "PDP",
                   "model": "pdp",
-                  "sku": ""
+                  "sku": "",
+                  "hideSku": "false"
                 }
               }
             }

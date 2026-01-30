@@ -6715,6 +6715,14 @@
         "label": "Product SKU",
         "description": "Enter the product SKU (e.g., NTTH1782630). This will be used if no SKU is provided in the URL.",
         "value": ""
+      },
+      {
+        "component": "boolean",
+        "label": "Hide SKU Display",
+        "description": "Enable to hide the SKU text below the product title",
+        "name": "hideSku",
+        "value": "false",
+        "valueType": "boolean"
       }
     ]
   }
