@@ -1,3 +1,19 @@
+// Import readBlockConfig from aem.js if available
+function readBlockConfig(block) {
+  const config = {};
+  block.querySelectorAll(':scope > div').forEach((row) => {
+    if (row.children && row.children.length === 2) {
+      const key = row.children[0].textContent.trim();
+      const value = row.children[1].textContent.trim();
+      config[key] = value;
+    } else if (row.children && row.children.length === 1) {
+      const value = row.children[0].textContent.trim();
+      if (value) config.default = value;
+    }
+  });
+  return config;
+}
+
 // Function to fetch all products from API
 async function fetchAllProducts() {
   try {
@@ -133,30 +149,62 @@ function createProductCard(product) {
 
 // Main decorate function
 export default async function decorate(block) {
-  // Get category tag from authored content (first div)
+  // Get category tag from authored content
   console.log('=== Products List Block Debug ===');
-  console.log('Block HTML:', block.innerHTML);
-  console.log('Block outerHTML:', block.outerHTML);
+  console.log('Block element:', block);
+  console.log('Block innerHTML:', block.innerHTML);
+  console.log('Block children count:', block.children.length);
   
-  // Try multiple ways to get the category tag
-  const categoryTagDiv = block.querySelector(':scope > div > div');
-  console.log('Category Tag Div (first attempt):', categoryTagDiv);
+  // Try to read block configuration
+  const blockConfig = readBlockConfig(block);
+  console.log('Block config:', blockConfig);
   
-  // Also try to get from data attribute (might be stored there in UE)
-  const dataTag = block.getAttribute('data-cq-tags') || block.getAttribute('cq:tags');
-  console.log('Data attribute tag:', dataTag);
-  
-  // Use whichever is available
   let categoryTag = '';
-  if (dataTag) {
-    categoryTag = dataTag;
-    console.log('Using tag from data attribute');
-  } else if (categoryTagDiv) {
-    categoryTag = categoryTagDiv.textContent.trim();
-    console.log('Using tag from div content');
+  
+  // Method 1: Read from block config (table structure)
+  if (blockConfig['cq:tags']) {
+    categoryTag = blockConfig['cq:tags'];
+    console.log('Found tag in block config (cq:tags):', categoryTag);
+  } else if (blockConfig['Category Tag']) {
+    categoryTag = blockConfig['Category Tag'];
+    console.log('Found tag in block config (Category Tag):', categoryTag);
+  } else if (blockConfig.default) {
+    categoryTag = blockConfig.default;
+    console.log('Found tag in block config (default):', categoryTag);
   }
   
-  console.log('Products List: Category Tag filter (raw):', `"${categoryTag}"`);
+  // Method 2: Read from the actual child divs (first div content)
+  if (!categoryTag) {
+    const firstDiv = block.querySelector(':scope > div');
+    if (firstDiv) {
+      const innerDiv = firstDiv.querySelector(':scope > div');
+      if (innerDiv && innerDiv.textContent.trim()) {
+        categoryTag = innerDiv.textContent.trim();
+        console.log('Found tag in first div content:', categoryTag);
+      }
+    }
+  }
+  
+  // Method 3: Try data attributes
+  if (!categoryTag) {
+    const possibleAttrs = [
+      'data-cq-tags',
+      'cq:tags',
+      'data-tags',
+      'data-category-tag'
+    ];
+    
+    for (const attr of possibleAttrs) {
+      const value = block.getAttribute(attr);
+      if (value) {
+        categoryTag = value;
+        console.log(`Found tag in attribute "${attr}":`, categoryTag);
+        break;
+      }
+    }
+  }
+  
+  console.log('Final Category Tag:', `"${categoryTag}"`);
   console.log('Category Tag length:', categoryTag.length);
   
   // Show loading state with debug info
