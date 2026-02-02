@@ -147,11 +147,18 @@ export default async function decorate(block) {
   
   // Filter products by category tag if specified
   if (categoryTag) {
-    console.log(`Filtering products by category tag: "${categoryTag}"`);
+    console.log(`Filtering products by category tag (raw): "${categoryTag}"`);
+    
+    // Extract tag value after colon if present (e.g., "Titan : Womens Watch" -> "Womens Watch")
+    const tagValue = categoryTag.includes(':') 
+      ? categoryTag.split(':')[1].trim() 
+      : categoryTag.trim();
+    
+    console.log(`Extracted tag value: "${tagValue}"`);
     
     // Normalize function: lowercase and remove apostrophes
-    const normalize = (str) => str.toLowerCase().replace(/'/g, '');
-    const normalizedCategoryTag = normalize(categoryTag);
+    const normalize = (str) => str.toLowerCase().replace(/'/g, '').trim();
+    const normalizedCategoryTag = normalize(tagValue);
     
     products = products.filter(product => {
       // Check if product has a tag that matches the selected category
@@ -173,10 +180,15 @@ export default async function decorate(block) {
   }
   
   if (products.length === 0) {
+    // Extract clean tag value for error message
+    const cleanTagValue = categoryTag 
+      ? (categoryTag.includes(':') ? categoryTag.split(':')[1].trim() : categoryTag.trim())
+      : '';
+    
     block.innerHTML = `
       <div class="products-list-error">
         <h2>No products found</h2>
-        <p>${categoryTag ? `No products found for category "${categoryTag}".` : 'Unable to load products. Please try again later.'}</p>
+        <p>${cleanTagValue ? `No products found for category "${cleanTagValue}".` : 'Unable to load products. Please try again later.'}</p>
       </div>
     `;
     return;
@@ -190,10 +202,16 @@ export default async function decorate(block) {
   }).join('');
   
   console.log('Setting block innerHTML...');
+  
+  // Extract clean tag value for display title
+  const displayTitle = categoryTag 
+    ? (categoryTag.includes(':') ? categoryTag.split(':')[1].trim() : categoryTag.trim())
+    : 'Our Products';
+  
   block.innerHTML = `
     <div class="products-list-container">
       <div class="products-list-header">
-        <h2 class="products-list-title">${categoryTag ? categoryTag : 'Our Products'}</h2>
+        <h2 class="products-list-title">${displayTitle}</h2>
        <!-- <p class="products-list-count">${products.length} products available</p> -->
       </div>
       <div class="products-list-grid">
