@@ -134,13 +134,42 @@ function createProductCard(product) {
 // Main decorate function
 export default async function decorate(block) {
   // Get category tag from authored content (first div)
+  console.log('=== Products List Block Debug ===');
+  console.log('Block HTML:', block.innerHTML);
+  console.log('Block outerHTML:', block.outerHTML);
+  
+  // Try multiple ways to get the category tag
   const categoryTagDiv = block.querySelector(':scope > div > div');
-  const categoryTag = categoryTagDiv ? categoryTagDiv.textContent.trim() : '';
+  console.log('Category Tag Div (first attempt):', categoryTagDiv);
   
-  console.log('Products List: Category Tag filter:', categoryTag);
+  // Also try to get from data attribute (might be stored there in UE)
+  const dataTag = block.getAttribute('data-cq-tags') || block.getAttribute('cq:tags');
+  console.log('Data attribute tag:', dataTag);
   
-  // Show loading state
-  block.innerHTML = '<div class="products-list-loading">Loading products...</div>';
+  // Use whichever is available
+  let categoryTag = '';
+  if (dataTag) {
+    categoryTag = dataTag;
+    console.log('Using tag from data attribute');
+  } else if (categoryTagDiv) {
+    categoryTag = categoryTagDiv.textContent.trim();
+    console.log('Using tag from div content');
+  }
+  
+  console.log('Products List: Category Tag filter (raw):', `"${categoryTag}"`);
+  console.log('Category Tag length:', categoryTag.length);
+  
+  // Show loading state with debug info
+  block.innerHTML = `
+    <div class="products-list-loading">
+      Loading products...
+      <div style="background: yellow; padding: 10px; margin-top: 10px; font-size: 12px;">
+        <strong>Debug Info:</strong><br>
+        Raw Category Tag: "${categoryTag}"<br>
+        Tag Length: ${categoryTag.length}
+      </div>
+    </div>
+  `;
   
   // Fetch all products
   let products = await fetchAllProducts();
@@ -212,6 +241,12 @@ export default async function decorate(block) {
     <div class="products-list-container">
       <div class="products-list-header">
         <h2 class="products-list-title">${displayTitle}</h2>
+        <div style="background: #f0f0f0; padding: 10px; margin: 10px 0; border: 1px solid #ccc; font-size: 12px;">
+          <strong>🔍 Filter Debug:</strong><br>
+          Raw Tag: "${categoryTag}"<br>
+          Extracted Tag: "${categoryTag.includes(':') ? categoryTag.split(':')[1].trim() : categoryTag}"<br>
+          Products Found: ${products.length}
+        </div>
        <!-- <p class="products-list-count">${products.length} products available</p> -->
       </div>
       <div class="products-list-grid">
