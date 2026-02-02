@@ -147,6 +147,27 @@ function createProductCard(product) {
   `;
 }
 
+// Function to fetch block properties from AEM resource
+async function fetchBlockProperties(resourcePath) {
+  try {
+    // Extract the actual JCR path from the URN
+    const path = resourcePath.replace('urn:aemconnection:', '');
+    const jsonUrl = `${path}.model.json`;
+    
+    console.log('Fetching block properties from:', jsonUrl);
+    
+    const response = await fetch(jsonUrl);
+    if (response.ok) {
+      const data = await response.json();
+      console.log('Block properties:', data);
+      return data;
+    }
+  } catch (error) {
+    console.log('Could not fetch block properties:', error);
+  }
+  return null;
+}
+
 // Main decorate function
 export default async function decorate(block) {
   // Get category tag from authored content
@@ -155,11 +176,11 @@ export default async function decorate(block) {
   console.log('Block innerHTML:', block.innerHTML);
   console.log('Block children count:', block.children.length);
   
-  // Try to read block configuration
-  const blockConfig = readBlockConfig(block);
-  console.log('Block config:', blockConfig);
-  
   let categoryTag = '';
+  
+  // Try to read block configuration from HTML (works on published site)
+  const blockConfig = readBlockConfig(block);
+  console.log('Block config from HTML:', blockConfig);
   
   // Method 1: Read from block config (table structure)
   if (blockConfig['cq:tags']) {
@@ -173,33 +194,15 @@ export default async function decorate(block) {
     console.log('Found tag in block config (default):', categoryTag);
   }
   
-  // Method 2: Read from the actual child divs (first div content)
-  if (!categoryTag) {
-    const firstDiv = block.querySelector(':scope > div');
-    if (firstDiv) {
-      const innerDiv = firstDiv.querySelector(':scope > div');
-      if (innerDiv && innerDiv.textContent.trim()) {
-        categoryTag = innerDiv.textContent.trim();
-        console.log('Found tag in first div content:', categoryTag);
-      }
-    }
-  }
-  
-  // Method 3: Try data attributes
-  if (!categoryTag) {
-    const possibleAttrs = [
-      'data-cq-tags',
-      'cq:tags',
-      'data-tags',
-      'data-category-tag'
-    ];
-    
-    for (const attr of possibleAttrs) {
-      const value = block.getAttribute(attr);
-      if (value) {
-        categoryTag = value;
-        console.log(`Found tag in attribute "${attr}":`, categoryTag);
-        break;
+  // Method 2: If in Universal Editor (no children), fetch from AEM resource
+  if (!categoryTag && block.children.length === 0) {
+    const resourcePath = block.getAttribute('data-aue-resource');
+    if (resourcePath) {
+      console.log('In Universal Editor - fetching properties from AEM resource');
+      const properties = await fetchBlockProperties(resourcePath);
+      if (properties && properties['cq:tags']) {
+        categoryTag = properties['cq:tags'];
+        console.log('Found tag in AEM resource properties:', categoryTag);
       }
     }
   }
