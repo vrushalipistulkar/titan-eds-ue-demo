@@ -147,23 +147,46 @@ function createProductCard(product) {
   `;
 }
 
+// Import getMetadata function (same pattern as page properties)
+function getMetadata(name, doc = document) {
+  const attr = name && name.includes(':') ? 'property' : 'name';
+  const meta = [...doc.head.querySelectorAll(`meta[${attr}="${name}"]`)]
+    .map((m) => m.content)
+    .join(', ');
+  return meta || '';
+}
+
 // Function to fetch block properties from AEM resource
 async function fetchBlockProperties(resourcePath) {
   try {
     // Extract the actual JCR path from the URN
     const path = resourcePath.replace('urn:aemconnection:', '');
-    const jsonUrl = `${path}.model.json`;
+    
+    // In author environment, we can access the content directly
+    // Try the direct path with .json selector
+    const jsonUrl = `${path}.json`;
     
     console.log('Fetching block properties from:', jsonUrl);
     
     const response = await fetch(jsonUrl);
     if (response.ok) {
       const data = await response.json();
-      console.log('Block properties:', data);
-      return data;
+      console.log('✅ Block properties fetched:', data);
+      
+      // The cq:tags property should be directly in the data
+      if (data['cq:tags']) {
+        console.log('Found cq:tags in response:', data['cq:tags']);
+        return data['cq:tags'];
+      }
+      
+      // Also log all properties to see what's available
+      console.log('Available properties:', Object.keys(data));
+      return null;
+    } else {
+      console.log('❌ Failed to fetch, status:', response.status);
     }
   } catch (error) {
-    console.log('Could not fetch block properties:', error);
+    console.log('❌ Error fetching block properties:', error);
   }
   return null;
 }
@@ -182,27 +205,29 @@ export default async function decorate(block) {
   const blockConfig = readBlockConfig(block);
   console.log('Block config from HTML:', blockConfig);
   
-  // Method 1: Read from block config (table structure)
+  // Method 1: Read from block config (table structure) - works on live/published
   if (blockConfig['cq:tags']) {
     categoryTag = blockConfig['cq:tags'];
-    console.log('Found tag in block config (cq:tags):', categoryTag);
+    console.log('✅ Found tag in block config (cq:tags):', categoryTag);
   } else if (blockConfig['Category Tag']) {
     categoryTag = blockConfig['Category Tag'];
-    console.log('Found tag in block config (Category Tag):', categoryTag);
+    console.log('✅ Found tag in block config (Category Tag):', categoryTag);
   } else if (blockConfig.default) {
     categoryTag = blockConfig.default;
-    console.log('Found tag in block config (default):', categoryTag);
+    console.log('✅ Found tag in block config (default):', categoryTag);
   }
   
-  // Method 2: If in Universal Editor (no children), fetch from AEM resource
+  // Method 2: If in Universal Editor/Author (no children), fetch from AEM resource
   if (!categoryTag && block.children.length === 0) {
     const resourcePath = block.getAttribute('data-aue-resource');
     if (resourcePath) {
-      console.log('In Universal Editor - fetching properties from AEM resource');
-      const properties = await fetchBlockProperties(resourcePath);
-      if (properties && properties['cq:tags']) {
-        categoryTag = properties['cq:tags'];
-        console.log('Found tag in AEM resource properties:', categoryTag);
+      console.log('🔄 In Universal Editor/Author - fetching properties from AEM');
+      categoryTag = await fetchBlockProperties(resourcePath);
+      
+      if (categoryTag) {
+        console.log('✅ Retrieved category tag from AEM:', categoryTag);
+      } else {
+        console.log('⚠️ No category tag found in AEM resource');
       }
     }
   }
