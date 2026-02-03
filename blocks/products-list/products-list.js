@@ -232,6 +232,19 @@ export default async function decorate(block) {
     }
   }
   
+  // Normalize categoryTag: handle null, arrays, and convert to string
+  if (!categoryTag) {
+    categoryTag = ''; // Convert null/undefined to empty string
+    console.log('⚠️ No category tag - will show all products');
+  } else if (Array.isArray(categoryTag)) {
+    // If it's an array, take the first element
+    categoryTag = categoryTag[0] || '';
+    console.log('📦 Category tag was array, extracted first element:', categoryTag);
+  }
+  
+  // Ensure it's a string and trim it
+  categoryTag = String(categoryTag).trim();
+  
   console.log('Final Category Tag:', `"${categoryTag}"`);
   console.log('Category Tag length:', categoryTag.length);
   
