@@ -250,16 +250,16 @@ export default async function decorate(block) {
   // Fetch all products
   let products = await fetchAllProducts();
   
-  // Filter products by category tag if specified
-  if (categoryTag) {
-    console.log(`Filtering products by category tag (raw): "${categoryTag}"`);
+  // Filter products by category tag ONLY if a tag is specified
+  if (categoryTag && categoryTag.trim() !== '') {
+    console.log(`🔍 Filtering products by category tag (raw): "${categoryTag}"`);
     
     // Extract tag value after colon if present (e.g., "Titan : Womens Watch" -> "Womens Watch")
     const tagValue = categoryTag.includes(':') 
       ? categoryTag.split(':')[1].trim() 
       : categoryTag.trim();
     
-    console.log(`Extracted tag value: "${tagValue}"`);
+    console.log(`📌 Extracted tag value: "${tagValue}"`);
     
     // Normalize function: lowercase and remove apostrophes
     const normalize = (str) => str.toLowerCase().replace(/'/g, '').trim();
@@ -281,19 +281,21 @@ export default async function decorate(block) {
       console.log(`Product ${product.sku}: tag="${productTag}", category="${productCategory}", matches=${matches}`);
       return matches;
     });
-    console.log(`Filtered to ${products.length} products`);
+    console.log(`✅ Filtered to ${products.length} products for category "${tagValue}"`);
+  } else {
+    console.log(`📋 No category filter applied - showing all ${products.length} products`);
   }
   
   if (products.length === 0) {
     // Extract clean tag value for error message
-    const cleanTagValue = categoryTag 
+    const cleanTagValue = categoryTag && categoryTag.trim() !== ''
       ? (categoryTag.includes(':') ? categoryTag.split(':')[1].trim() : categoryTag.trim())
       : '';
     
     block.innerHTML = `
       <div class="products-list-error">
         <h2>No products found</h2>
-        <p>${cleanTagValue ? `No products found for category "${cleanTagValue}".` : 'Unable to load products. Please try again later.'}</p>
+        <p>${cleanTagValue ? `No products found for category "${cleanTagValue}". Try removing the filter to see all products.` : 'Unable to load products. Please try again later.'}</p>
       </div>
     `;
     return;
@@ -309,9 +311,9 @@ export default async function decorate(block) {
   console.log('Setting block innerHTML...');
   
   // Extract clean tag value for display title
-  const displayTitle = categoryTag 
+  const displayTitle = categoryTag && categoryTag.trim() !== ''
     ? (categoryTag.includes(':') ? categoryTag.split(':')[1].trim() : categoryTag.trim())
-    : 'Our Products';
+    : 'All Products';
   
   block.innerHTML = `
     <div class="products-list-container">
@@ -320,7 +322,8 @@ export default async function decorate(block) {
         <div style="background: #f0f0f0; padding: 10px; margin: 10px 0; border: 1px solid #ccc; font-size: 12px;">
           <strong>🔍 Filter Debug:</strong><br>
           Raw Tag: "${categoryTag}"<br>
-          Extracted Tag: "${categoryTag.includes(':') ? categoryTag.split(':')[1].trim() : categoryTag}"<br>
+          Filter Applied: ${categoryTag && categoryTag.trim() !== '' ? 'Yes' : 'No'}<br>
+          ${categoryTag && categoryTag.trim() !== '' ? `Extracted Tag: "${categoryTag.includes(':') ? categoryTag.split(':')[1].trim() : categoryTag}"<br>` : ''}
           Products Found: ${products.length}
         </div>
        <!-- <p class="products-list-count">${products.length} products available</p> -->
