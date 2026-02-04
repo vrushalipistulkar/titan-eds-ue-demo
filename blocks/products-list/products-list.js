@@ -248,15 +248,10 @@ export default async function decorate(block) {
   console.log('Final Category Tag:', `"${categoryTag}"`);
   console.log('Category Tag length:', categoryTag.length);
   
-  // Show loading state with debug info
+  // Show loading state
   block.innerHTML = `
     <div class="products-list-loading">
       Loading products...
-      <div style="background: yellow; padding: 10px; margin-top: 10px; font-size: 12px;">
-        <strong>Debug Info:</strong><br>
-        Raw Category Tag: "${categoryTag}"<br>
-        Tag Length: ${categoryTag.length}
-      </div>
     </div>
   `;
   
@@ -332,14 +327,7 @@ export default async function decorate(block) {
     <div class="products-list-container">
       <div class="products-list-header">
         <h2 class="products-list-title">${displayTitle}</h2>
-        <div style="background: #f0f0f0; padding: 10px; margin: 10px 0; border: 1px solid #ccc; font-size: 12px;">
-          <strong>🔍 Filter Debug:</strong><br>
-          Raw Tag: "${categoryTag}"<br>
-          Filter Applied: ${categoryTag && categoryTag.trim() !== '' ? 'Yes' : 'No'}<br>
-          ${categoryTag && categoryTag.trim() !== '' ? `Extracted Tag: "${categoryTag.includes(':') ? categoryTag.split(':')[1].trim() : categoryTag}"<br>` : ''}
-          Products Found: ${products.length}
-        </div>
-       <!-- <p class="products-list-count">${products.length} products available</p> -->
+        <p class="products-list-count">${products.length} product${products.length !== 1 ? 's' : ''} available</p>
       </div>
       <div class="products-list-grid">
         ${productsHTML}
