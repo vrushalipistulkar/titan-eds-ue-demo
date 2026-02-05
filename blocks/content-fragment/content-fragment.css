@@ -148,7 +148,7 @@
   align-items: flex-start;
   text-align: left;
   padding: 60px;
-  background: var(--light-color) !important;
+  background: #ffffff !important;
   background-image: none !important;
   position: relative;
   z-index: 2;
@@ -188,7 +188,7 @@
   align-items: flex-start;
   text-align: left;
   padding: 60px;
-  background: var(--light-color) !important;
+  background: #ffffff !important;
   background-image: none !important;
   position: relative;
   z-index: 2;
@@ -215,7 +215,7 @@
   align-items: center;
   text-align: center;
   padding: 60px;
-  background: var(--light-color) !important;
+  background: #ffffff !important;
   background-image: none !important;
   position: relative;
   z-index: 2;
@@ -242,7 +242,7 @@
   align-items: center;
   text-align: center;
   padding: 60px;
-  background: var(--light-color) !important;
+  background: #ffffff !important;
   background-image: none !important;
   position: relative;
   z-index: 2;
