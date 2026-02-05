@@ -122,7 +122,23 @@
   align-items: stretch;
   min-height: 400px;
   position: relative;
-  background: none; /* Remove background from main container */
+  background-size: cover;
+  background-position: left center;
+  background-repeat: no-repeat;
+  /* Clip the background to only show on left 50% */
+  background-clip: padding-box;
+}
+
+/* Create an overlay to hide the right 50% of the background */
+.content-fragment-wrapper .content-fragment .banner-content.image-left::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  background: var(--light-color);
+  z-index: 1;
 }
 
 .content-fragment-wrapper .content-fragment .banner-content.image-left::before {
@@ -132,11 +148,8 @@
   left: 0;
   width: 50%;
   height: 100%;
-  background-image: inherit; /* Image will be set via inline style on parent */
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  z-index: 1;
+  background: transparent;
+  z-index: 0;
 }
 
 .content-fragment-wrapper .content-fragment .banner-content.image-left .banner-detail {
@@ -147,9 +160,9 @@
   align-items: flex-start;
   text-align: left;
   padding: 60px;
-  background: var(--light-color);
+  background: transparent;
   position: relative;
-  z-index: 2;
+  z-index: 2; /* Ensure text appears above the ::after overlay */
   margin-left: 50%;
 }
 
@@ -160,7 +173,21 @@
   align-items: stretch;
   min-height: 400px;
   position: relative;
-  background: none; /* Remove background from main container */
+  background-size: cover;
+  background-position: right center;
+  background-repeat: no-repeat;
+}
+
+/* Create an overlay to hide the left 50% of the background */
+.content-fragment-wrapper .content-fragment .banner-content.image-right::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: var(--light-color);
+  z-index: 1;
 }
 
 .content-fragment-wrapper .content-fragment .banner-content.image-right::before {
@@ -170,11 +197,8 @@
   right: 0;
   width: 50%;
   height: 100%;
-  background-image: inherit; /* Image will be set via inline style on parent */
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  z-index: 1;
+  background: transparent;
+  z-index: 0;
 }
 
 .content-fragment-wrapper .content-fragment .banner-content.image-right .banner-detail {
@@ -185,9 +209,9 @@
   align-items: flex-start;
   text-align: left;
   padding: 60px;
-  background: var(--light-color);
+  background: transparent;
   position: relative;
-  z-index: 2;
+  z-index: 2; /* Ensure text appears above the ::after overlay */
   margin-right: 50%;
 }
 
