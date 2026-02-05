@@ -122,34 +122,10 @@
   align-items: stretch;
   min-height: 400px;
   position: relative;
-  background-size: cover;
+  background-size: 50% 100%; /* Only cover left 50% */
   background-position: left center;
   background-repeat: no-repeat;
-  /* Clip the background to only show on left 50% */
-  background-clip: padding-box;
-}
-
-/* Create an overlay to hide the right 50% of the background */
-.content-fragment-wrapper .content-fragment .banner-content.image-left::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 50%;
-  height: 100%;
-  background: var(--light-color);
-  z-index: 1;
-}
-
-.content-fragment-wrapper .content-fragment .banner-content.image-left::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 50%;
-  height: 100%;
-  background: transparent;
-  z-index: 0;
+  background-color: var(--light-color);
 }
 
 .content-fragment-wrapper .content-fragment .banner-content.image-left .banner-detail {
@@ -160,9 +136,9 @@
   align-items: flex-start;
   text-align: left;
   padding: 60px;
-  background: transparent;
+  background: var(--light-color);
   position: relative;
-  z-index: 2; /* Ensure text appears above the ::after overlay */
+  z-index: 2;
   margin-left: 50%;
 }
 
@@ -173,32 +149,10 @@
   align-items: stretch;
   min-height: 400px;
   position: relative;
-  background-size: cover;
+  background-size: 50% 100%; /* Only cover right 50% */
   background-position: right center;
   background-repeat: no-repeat;
-}
-
-/* Create an overlay to hide the left 50% of the background */
-.content-fragment-wrapper .content-fragment .banner-content.image-right::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 50%;
-  height: 100%;
-  background: var(--light-color);
-  z-index: 1;
-}
-
-.content-fragment-wrapper .content-fragment .banner-content.image-right::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 50%;
-  height: 100%;
-  background: transparent;
-  z-index: 0;
+  background-color: var(--light-color);
 }
 
 .content-fragment-wrapper .content-fragment .banner-content.image-right .banner-detail {
@@ -209,9 +163,9 @@
   align-items: flex-start;
   text-align: left;
   padding: 60px;
-  background: transparent;
+  background: var(--light-color);
   position: relative;
-  z-index: 2; /* Ensure text appears above the ::after overlay */
+  z-index: 2;
   margin-right: 50%;
 }
 
